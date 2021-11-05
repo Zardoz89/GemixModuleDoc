@@ -8,5 +8,4 @@
 	"name": "moduledoc",
 	"targetType": "executable",
 	"sourcePaths": ["src"],
-	"mainSourceFile": "src/moduleDoc.d"
 }

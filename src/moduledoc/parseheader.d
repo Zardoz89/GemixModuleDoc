@@ -1,6 +1,8 @@
 /**
- * Procesador de cbeceras de modulos de Gemix, para generar documentación de forma automatica
+ * Procesador de cabeceras de modulos de Gemix, para generar documentación de forma automatica
  */
+module moduledoc.parseheader;
+
 import std.stdio;
 import std.regex : split, ctRegex;
 import std.algorithm.searching : findSkip, findSplit, findSplitBefore;
@@ -8,173 +10,18 @@ import std.conv : to;
 import std.range : drop;
 import std.range.primitives : isInputRange;
 
+import moduledoc.data;
+
 private enum EOL_REGEX = ctRegex!`[)]|\r\n|\n|$`;
 
-/// Categoria del módulo
-enum Category {
-  Null     = "",
-  Unknown  = "unknow",
-  Generic  = "generic",
-  Audio    = "audio",
-  Graphics = "graphics",
-  Input    = "input",
-  Physics  = "physics"
-}
-
-/// Sistema del módulo
-enum System {
-  Null    = "",
-  Unknown = "unknow",
-  Common  = "common",
-  Legacy  = "legacy",
-  Modern  = "modern"
-}
-
-/// Tipos primitivos de Gemix
-enum BasicType {
-  Unknow = "?",
-  Byte   = "BYTE",
-  Word   = "WORD",
-  DWord  = "DWORD",
-  Int    = "INT",
-  Int8   = "INT8",
-  Int16  = "INT16",
-  Int32  = "INT32",
-  Int64  = "INT64",
-  UInt   = "UINT",
-  UInt8  = "UINT8",
-  UInt16 = "UINT16",
-  UInt32 = "UINT32",
-  UInt64 = "UINT64",
-  Float  = "FLOAT",
-  Double = "DOUBLE",
-  String = "STRING"
-}
-
-/// Representa un tipo pasado como argumento o devuelto por una función
-struct Type {
-  BasicType type;
-  size_t indirectionLevel = 0;
-
-  public string toString() {
-    import std.algorithm.iteration : joiner;
-    import std.range : repeat;
-    return type ~ "*".repeat(this.indirectionLevel).joiner().to!string;
-  }
-}
-
 /**
- * Contenedor de la información parseada de un modulo Gemix
+ * Lee un fichero fuente C o C++ y genera un GemixModuleInfo con la información parseada del fichero
  */
-class ModuleInfo {
-  string name;
-  Category category = Category.Null;
-  System system = System.Null;
-  FunctionInfo[][string] functions;
-
-  override
-  public string toString() {
-    string ret =
-      "Name: " ~ this.name ~  ", "
-      ~ "Category: " ~ this.category ~ ", "
-      ~ "System: " ~ this.system;
-    if (functions.length > 0) {
-      ret ~= ", \n";
-      import std.conv : to;
-      ret ~= functions.to!string;
-    }
-    return "{" ~ ret  ~ "}";
-  }
-}
-
-/// Informacion de una función del módulo
-class FunctionInfo {
-  string signature;
-  string functionName;
-  Type returnType;
-  ParamInfo[] params;
-  string docText;
-
-  override
-  public string toString() {
-    import std.conv : to;
-    string ret =
-      "Name: " ~ this.functionName ~  ", "
-      ~ "Signature: " ~ this.signature ~  ", "
-      ~ "Return: " ~ this.returnType.toString() ~ ", "
-      ~ "Params: " ~ this.params.to!string;
-    if (docText.length > 0) {
-      ret ~= ", " ~ docText;
-    }
-    return "f{" ~ ret ~ "}\n";
-  }
-}
-
-/// Información de un parámetro de una función
-class ParamInfo {
-  string name;
-  Type type;
-  string defaultValue;
-  string docText;
-
-  override
-  public string toString() {
-    string ret =
-      "Name: " ~ this.name ~  ", "
-      ~ "Type: " ~ this.type.toString();
-    if (defaultValue.length > 0) {
-      ret ~= "= " ~ defaultValue;
-    }
-    if (docText.length > 0) {
-      ret ~= ", " ~ docText;
-    }
-    return "p{" ~ ret ~ "}";
-  }
-}
-
-enum VERSION = "v0.1.0";
-
-int main(string[] args) {
-  import std.getopt;
-  bool showVersion;
-  auto helpInformation = getopt(
-      args,
-      "v", "Show version", &showVersion
-      );
-
-  if (showVersion) {
-    writeln("moduleDoc " ~ VERSION);
-    return 0;
-  }
-
-  if (helpInformation.helpWanted || args.length <= 1)
-  {
-    defaultGetoptPrinter("moduleDoc [options] inputFile0 inputFile1...\n"
-        ~ "An automatic tool to generate Gemix modules documentation from his source files.",
-        helpInformation.options);
-    return helpInformation.helpWanted ? 0 : 1;
-  }
-
-  string[] inputFiles = args[1..$];
-
-  ModuleInfo[] moduleInfos = [];
-  foreach(inputFile; inputFiles) {
-    moduleInfos ~= processFile(inputFile);
-  }
-
-  writeln(moduleInfos);
-
-  return 0;
-}
-
-/**
- * Lee un fichero fuente C o C++ y genera un ModuleInfo con la información parseada del fichero
- */
-ModuleInfo processFile(string fileName) {
+GemixModuleInfo processFile(string fileName) {
   import std.file : readText;
   import std.utf : byUTF;
 
-  ModuleInfo moduleInfo = new ModuleInfo();
+  GemixModuleInfo moduleInfo = new GemixModuleInfo();
   auto fileData = readText(fileName).byUTF!char()
     .processHeaderCommentBlock(moduleInfo)
     .processLibraryProperties(moduleInfo)
@@ -183,10 +30,15 @@ ModuleInfo processFile(string fileName) {
   return moduleInfo;
 }
 
-private R processHeaderCommentBlock(R)(R text, ModuleInfo moduleInfo)
+private R processHeaderCommentBlock(R)(R text, GemixModuleInfo moduleInfo)
 if (isInputRange!R)
 {
+  import std.regex : matchFirst;
+  import std.range : dropBack;
+
   if(text.findSkip("/**")) {
+    moduleInfo.docText = text.to!string.matchFirst(ctRegex!(`.*?\*/`, "s")).hit.dropBack(2);
+
     if(text.findSkip("@name")) {
       import std.algorithm.mutation : strip;
       string nameToken = text.to!string.split(EOL_REGEX)[0];
@@ -198,7 +50,7 @@ if (isInputRange!R)
   return text;
 }
 
-private R processLibraryProperties(R)(R text, ModuleInfo moduleInfo)
+private R processLibraryProperties(R)(R text, GemixModuleInfo moduleInfo)
 if (isInputRange!R)
 {
   if (text.findSkip("GMXDEFINE_LIBRARY_PROPERTIES")) {
@@ -261,7 +113,7 @@ if (isInputRange!R)
   return text;
 }
 
-private R processLibraryExportsBlock(R)(R text, ModuleInfo moduleInfo)
+private R processLibraryExportsBlock(R)(R text, GemixModuleInfo moduleInfo)
 if (isInputRange!R)
 {
   if (text.findSkip("GMXDEFINE_LIBRARY_EXPORTS")) {
@@ -270,7 +122,7 @@ if (isInputRange!R)
   return text;
 }
 
-private R processFunctionsBlock(R)(R text, ModuleInfo moduleInfo)
+private R processFunctionsBlock(R)(R text, GemixModuleInfo moduleInfo)
 if (isInputRange!R)
 {
   import std.algorithm.searching : canFind;

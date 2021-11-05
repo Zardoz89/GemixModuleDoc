@@ -73,4 +73,4 @@ tags
 
 moduledoc
 moduledoc.exe
-
+!/src/moduledoc
