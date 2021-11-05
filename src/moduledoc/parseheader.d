@@ -4,15 +4,14 @@
 module moduledoc.parseheader;
 
 import std.stdio;
-import std.regex : split, ctRegex;
+import std.regex : split;
 import std.algorithm.searching : findSkip, findSplit, findSplitBefore;
 import std.conv : to;
 import std.range : drop;
 import std.range.primitives : isInputRange;
 
 import moduledoc.data;
-
-private enum EOL_REGEX = ctRegex!`[)]|\r\n|\n|$`;
+import moduledoc.regexutil;
 
 /**
  * Lee un fichero fuente C o C++ y genera un GemixModuleInfo con la información parseada del fichero
@@ -37,7 +36,7 @@ if (isInputRange!R)
   import std.range : dropBack;
 
   if(text.findSkip("/**")) {
-    moduleInfo.docText = text.to!string.matchFirst(ctRegex!(`.*?\*/`, "s")).hit.dropBack(2);
+    moduleInfo.docText = text.to!string.matchFirst(EXTRACT_COMMENT_BLOCK_REGEX).hit.dropBack(2);
 
     if(text.findSkip("@name")) {
       import std.algorithm.mutation : strip;
@@ -138,7 +137,7 @@ if (isInputRange!R)
     string functionsBlock = text.findSplitBefore(");")[0].to!string;
 
     // Dividimos el bloque en otros que contengan bloques de comentarios y declaraciones de funciones
-    auto fDecAndCommentBlocks = functionsBlock.splitter!(Yes.keepSeparators)(ctRegex!(`/\*\*.*?\*/`, "s"));
+    auto fDecAndCommentBlocks = functionsBlock.splitter!(Yes.keepSeparators)(COMMENT_BLOCK_REGEX);
     string functionDocText = "";
     foreach (fDecAndCommentBlock; fDecAndCommentBlocks) {
       fDecAndCommentBlock = fDecAndCommentBlock.stripLeft('\r').stripLeft('\n').stripLeft(' ');
@@ -150,7 +149,7 @@ if (isInputRange!R)
       if (fDecAndCommentBlock.canFind("/**")) {
         functionDocText = processFunctionCommentBlock(fDecAndCommentBlock);
       } else {
-        auto fTokens = fDecAndCommentBlock.splitter(ctRegex!`,\s+`).chunks(2).stride(2);
+        auto fTokens = fDecAndCommentBlock.splitter(SPLIT_COMMA_SPACE_SEPARATOR_REGEX).chunks(2).stride(2);
         // Cada entrada en fTokens, es una definición de una funcion : "sigantura", "retorno"
         foreach(fToken; fTokens) {
           if (fToken.empty) {
@@ -178,7 +177,7 @@ if (isInputRange!R)
 
   string ret = "";
   if(text.findSkip("/**")) {
-    ret = text.matchFirst(ctRegex!(`.*\*/`, "s")).hit.dropBack(2);
+    ret = text.matchFirst(EXTRACT_COMMENT_BLOCK_REGEX).hit.dropBack(2);
   }
   text.findSkip("*/");
   return ret;
@@ -197,8 +196,8 @@ if (isInputRange!R)
 
   FunctionInfo funcionInfo = new FunctionInfo();
   funcionInfo.signature = signature;
-  funcionInfo.functionName = funcionInfo.signature.matchFirst(ctRegex!`[a-zA-Z0-9_-]+`).hit;
-  foreach(param; funcionInfo.signature[funcionInfo.functionName.length..$].stripLeft("(").stripRight(")").split(ctRegex!`,`)) {
+  funcionInfo.functionName = funcionInfo.signature.matchFirst(IDENTIFIER_REGEX).hit;
+  foreach(param; funcionInfo.signature[funcionInfo.functionName.length..$].stripLeft("(").stripRight(")").split(SPLIT_COMMA_SEPARATOR_REGEX)) {
     funcionInfo.params ~= processSignatureParam(param);
   }
 
