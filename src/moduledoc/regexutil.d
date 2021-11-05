@@ -24,5 +24,5 @@ package enum SPLIT_COMMA_SEPARATOR_REGEX = ctRegex!(`,`, "s");
 package enum IDENTIFIER_REGEX = ctRegex!(`[a-zA-Z_][a-zA-Z0-9_-]+`);
 
 /// Regex para encontrar una entrada de documentación estilo JavaDoc/JsDoc/DOxygen
-package enum DOC_ENTRYPOINT_REGEX = ctRegex!(`@\w+ (.*)\n`, "s");
+package enum DOC_ENTRYPOINT_REGEX = ctRegex!(`@\w+\s*(.*)\n`, "s");
 

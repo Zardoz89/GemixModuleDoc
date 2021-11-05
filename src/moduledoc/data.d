@@ -131,7 +131,7 @@ class GemixModuleInfo {
   public void parseDocText() {
     import std.regex : matchFirst, replaceAll, ctRegex;
 
-    auto nameMatch = this.docText.matchFirst(ctRegex!`@name (.*)`);
+    auto nameMatch = this.docText.matchFirst(ctRegex!`@name\s+(.*)`);
     if (nameMatch.length > 0) {
       this.name = nameMatch[1].stripSpaces;
     }
@@ -187,7 +187,18 @@ class FunctionInfo {
 
   /// Parsea el texto de documentación del módulo
   public void parseDocText() {
-    import std.regex : matchFirst, replaceAll, ctRegex;
+    import std.regex : matchAll, replaceAll, ctRegex;
+
+    auto paramMatches = this.docText.matchAll(ctRegex!(`@param\s+([a-zA-Z][a-zA-Z0-9_-]*)\s+(.*)`));
+    size_t index;
+    foreach(paramMatch ; paramMatches) {
+      if (index >= this.params.length) {
+        break;
+      }
+      this.params[index].name = paramMatch[1];
+      this.params[index].docText = paramMatch[2];
+      index++;
+    }
 
     // Una vez extraido la información util de documentaciñon, obtenemos el cuerpo del texto de documentación
     this.docBody = this.docText.replaceAll(DOC_ENTRYPOINT_REGEX, "").replaceAll(ctRegex!`\s*\*\s*`, "");
