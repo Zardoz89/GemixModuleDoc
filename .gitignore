@@ -71,6 +71,6 @@ tags
 
 # End of https://www.gitignore.io/api/d,vim,visualstudiocode
 
-moduledoc
-moduledoc.exe
+./moduledoc
+./moduledoc.exe
 !/src/moduledoc
