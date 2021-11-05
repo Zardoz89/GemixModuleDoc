@@ -1,0 +1,12 @@
+{
+	"authors": [
+		"Luis Panadero Guardeño"
+	],
+	"copyright": "Copyright © 2021, Luis Panadero Guardeño",
+	"description": "Gemix Module documentation generator",
+	"license": "MIT",
+	"name": "moduledoc",
+	"targetType": "executable",
+	"sourcePaths": ["src"],
+	"mainSourceFile": "src/moduleDoc.d"
+}

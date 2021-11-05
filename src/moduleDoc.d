@@ -1,7 +1,6 @@
-#!/usr/bin/env dub
-/+ dub.sdl:
-  name "moduleDoc"
-  +/
+/**
+ * Procesador de cbeceras de modulos de Gemix, para generar documentación de forma automatica
+ */
 import std.stdio;
 import std.regex : split, ctRegex;
 import std.algorithm.searching : findSkip, findSplit, findSplitBefore;

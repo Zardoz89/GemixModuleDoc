@@ -70,3 +70,7 @@ tags
 .history
 
 # End of https://www.gitignore.io/api/d,vim,visualstudiocode
+
+moduledoc
+moduledoc.exe
+
