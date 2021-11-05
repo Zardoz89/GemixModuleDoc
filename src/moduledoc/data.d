@@ -7,6 +7,8 @@ module moduledoc.data;
 import std.conv : to;
 import std.range;
 
+import moduledoc.strutil;
+import moduledoc.regexutil;
 
 /// Categoria del módulo
 enum Category {
@@ -110,6 +112,9 @@ class GemixModuleInfo {
   /// Nombre del modulo
   string name;
 
+  /// Texto de documentación
+  string docBody;
+
   /// Categoria del módulo
   Category category = Category.Null;
 
@@ -122,6 +127,25 @@ class GemixModuleInfo {
   /// Bloque de texto de documentación en bruto
   string docText;
 
+  /// Parsea el texto de documentación del módulo
+  public void parseDocText() {
+    import std.regex : matchFirst, replaceAll, ctRegex;
+
+    auto nameMatch = this.docText.matchFirst(ctRegex!`@name (.*)`);
+    if (nameMatch.length > 0) {
+      this.name = nameMatch[1].stripSpaces;
+    }
+
+    // Una vez extraido la información util de documentaciñon, obtenemos el cuerpo del texto de documentación
+    this.docBody = this.docText.replaceAll(DOC_ENTRYPOINT_REGEX, "").replaceAll(ctRegex!`\s*\*\s*`, "");
+
+    foreach(overloadedFunctions; this.functions.byValue()) {
+      foreach(overloadFunction; overloadedFunctions) {
+        overloadFunction.parseDocText;
+      }
+    }
+  }
+
   override
   public string toString() {
     string ret =
@@ -133,8 +157,8 @@ class GemixModuleInfo {
       import std.conv : to;
       ret ~= functions.to!string;
     }
-    if (docText.length > 0) {
-      ret ~= ", " ~ docText;
+    if (docBody.length > 0) {
+      ret ~= ", " ~ docBody;
     }
     return "{" ~ ret  ~ "}";
   }
@@ -158,6 +182,17 @@ class FunctionInfo {
   /// Bloque de texto de documentación en bruto
   string docText;
 
+  /// Bloque de texto de documentación
+  string docBody;
+
+  /// Parsea el texto de documentación del módulo
+  public void parseDocText() {
+    import std.regex : matchFirst, replaceAll, ctRegex;
+
+    // Una vez extraido la información util de documentaciñon, obtenemos el cuerpo del texto de documentación
+    this.docBody = this.docText.replaceAll(DOC_ENTRYPOINT_REGEX, "").replaceAll(ctRegex!`\s*\*\s*`, "");
+  }
+
   override
   public string toString() {
     import std.conv : to;
@@ -166,8 +201,8 @@ class FunctionInfo {
       ~ "Signature: " ~ this.signature ~  ", "
       ~ "Return: " ~ this.returnType.toString() ~ ", "
       ~ "Params: " ~ this.params.to!string;
-    if (docText.length > 0) {
-      ret ~= ", " ~ docText;
+    if (docBody.length > 0) {
+      ret ~= ", " ~ docBody;
     }
     return "f{" ~ ret ~ "}\n";
   }

@@ -36,6 +36,10 @@ int main(string[] args) {
     moduleInfos ~= processFile(inputFile);
   }
 
+  foreach(moduleInfo; moduleInfos) {
+    moduleInfo.parseDocText();
+  }
+
   writeln(moduleInfos);
 
   return 0;

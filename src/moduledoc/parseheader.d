@@ -38,13 +38,6 @@ if (isInputRange!R)
 
   if(text.findSkip("/**")) {
     moduleInfo.docText = text.to!string.matchFirst(EXTRACT_COMMENT_BLOCK_REGEX).hit.dropBack(2);
-
-    if(text.findSkip("@name")) {
-      import std.algorithm.mutation : strip;
-      string nameToken = text.to!string.split(EOL_REGEX)[0];
-      moduleInfo.name = nameToken.stripSpaces().strip('*');
-      text = text.drop(nameToken.length);
-    }
   }
   text.findSkip("*/");
   return text;
