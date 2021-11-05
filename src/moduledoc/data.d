@@ -152,13 +152,13 @@ class GemixModuleInfo {
       "Name: " ~ this.name ~  ", "
       ~ "Category: " ~ this.category ~ ", "
       ~ "System: " ~ this.system;
+    if (docBody.length > 0) {
+      ret ~= ", " ~ docBody;
+    }
     if (functions.length > 0) {
       ret ~= ", \n";
       import std.conv : to;
       ret ~= functions.to!string;
-    }
-    if (docBody.length > 0) {
-      ret ~= ", " ~ docBody;
     }
     return "{" ~ ret  ~ "}";
   }
@@ -185,9 +185,12 @@ class FunctionInfo {
   /// Bloque de texto de documentación
   string docBody;
 
+  /// Bloque de texto de documentación del valor retornado
+  string docReturnBody;
+
   /// Parsea el texto de documentación del módulo
   public void parseDocText() {
-    import std.regex : matchAll, replaceAll, ctRegex;
+    import std.regex : matchAll, matchFirst, replaceAll, ctRegex;
 
     auto paramMatches = this.docText.matchAll(ctRegex!(`@param\s+([a-zA-Z][a-zA-Z0-9_-]*)\s+(.*)`));
     size_t index;
@@ -196,8 +199,13 @@ class FunctionInfo {
         break;
       }
       this.params[index].name = paramMatch[1];
-      this.params[index].docText = paramMatch[2];
+      this.params[index].docText = paramMatch[2].stripSpaces;
       index++;
+    }
+
+    auto returnMatch = this.docText.matchFirst(ctRegex!`@return\s+(.*)`);
+    if (returnMatch.length > 0) {
+      this.docReturnBody = returnMatch[1].stripSpaces;
     }
 
     // Una vez extraido la información util de documentaciñon, obtenemos el cuerpo del texto de documentación
@@ -210,8 +218,11 @@ class FunctionInfo {
     string ret =
       "Name: " ~ this.functionName ~  ", "
       ~ "Signature: " ~ this.signature ~  ", "
-      ~ "Return: " ~ this.returnType.toString() ~ ", "
-      ~ "Params: " ~ this.params.to!string;
+      ~ "Return: " ~ this.returnType.toString();
+    if (docReturnBody.length > 0) {
+      ret ~= " " ~ docReturnBody;
+    }
+    ret ~= ", Params: " ~ this.params.to!string;
     if (docBody.length > 0) {
       ret ~= ", " ~ docBody;
     }
