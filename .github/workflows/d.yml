@@ -34,4 +34,18 @@ jobs:
       - name: 'Build'
         run: |
           # Release build
-          dub build --parallel -b release
+          dub build -b release
+          pwd
+          ls
+      - name: 'Upload artifact - Windows'
+        if: runner.os == 'windows'
+        uses: actions/upload-artifact@v2.2.4
+        with:
+          name: moduledoc Windows x64
+          path: ${{ github.workspace }}/moduledoc.exe
+      - name: 'Upload artifact - Linux'
+        if: runner.os == 'Linux'
+        uses: actions/upload-artifact@v2.2.4
+        with:
+          name: moduledoc Linux x64
+          path: ${{ github.workspace }}/moduledoc
