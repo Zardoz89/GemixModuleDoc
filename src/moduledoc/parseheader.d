@@ -12,6 +12,7 @@ import std.range.primitives : isInputRange;
 
 import moduledoc.data;
 import moduledoc.regexutil;
+import moduledoc.strutil;
 
 /**
  * Lee un fichero fuente C o C++ y genera un GemixModuleInfo con la información parseada del fichero
@@ -41,7 +42,7 @@ if (isInputRange!R)
     if(text.findSkip("@name")) {
       import std.algorithm.mutation : strip;
       string nameToken = text.to!string.split(EOL_REGEX)[0];
-      moduleInfo.name = nameToken.strip('\t').strip(' ').strip('*');
+      moduleInfo.name = nameToken.stripSpaces().strip('*');
       text = text.drop(nameToken.length);
     }
   }
@@ -125,13 +126,12 @@ private R processFunctionsBlock(R)(R text, GemixModuleInfo moduleInfo)
 if (isInputRange!R)
 {
   import std.algorithm.searching : canFind;
-  import std.algorithm.mutation : stripLeft, stripRight;
   import std.range : chunks, stride;
   import std.regex : splitter;
   import std.typecons : Yes;
 
   if (text.findSkip("GMXDEFINE_FUNCTIONS(")) {
-    text = text.stripLeft('\r').stripLeft('\n').stripLeft(' ').stripLeft('\t').stripLeft(' ');
+    text = text.stripLeftEOL.stripLeftSpaces;
 
     // Obtenemos todo el bloque dentro de GMXDEFINE_FUNCTIONS
     string functionsBlock = text.findSplitBefore(");")[0].to!string;
@@ -140,7 +140,7 @@ if (isInputRange!R)
     auto fDecAndCommentBlocks = functionsBlock.splitter!(Yes.keepSeparators)(COMMENT_BLOCK_REGEX);
     string functionDocText = "";
     foreach (fDecAndCommentBlock; fDecAndCommentBlocks) {
-      fDecAndCommentBlock = fDecAndCommentBlock.stripLeft('\r').stripLeft('\n').stripLeft(' ');
+      fDecAndCommentBlock = fDecAndCommentBlock.stripLeftEOL.stripLeftSpaces;
       if (fDecAndCommentBlock.length == 0) {
         continue;
       }
@@ -189,7 +189,7 @@ if (isInputRange!R)
   import std.regex : matchFirst;
   import std.string : strip, stripLeft, stripRight;
 
-  string signature = fToken.front.stripLeft("\r").stripLeft("\n").stripLeft(" ").strip("\"");
+  string signature = fToken.front.stripLeftEOL.stripLeftSpaces.strip("\"");
   if (signature.length == 0) {
     return null;
   }
@@ -197,7 +197,7 @@ if (isInputRange!R)
   FunctionInfo funcionInfo = new FunctionInfo();
   funcionInfo.signature = signature;
   funcionInfo.functionName = funcionInfo.signature.matchFirst(IDENTIFIER_REGEX).hit;
-  foreach(param; funcionInfo.signature[funcionInfo.functionName.length..$].stripLeft("(").stripRight(")").split(SPLIT_COMMA_SEPARATOR_REGEX)) {
+  foreach(param; funcionInfo.signature[funcionInfo.functionName.length..$].stripParens.split(SPLIT_COMMA_SEPARATOR_REGEX)) {
     funcionInfo.params ~= processSignatureParam(param);
   }
 
