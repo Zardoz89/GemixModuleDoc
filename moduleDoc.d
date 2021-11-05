@@ -31,7 +31,7 @@ enum System {
   Modern  = "modern"
 }
 
-/// Tipos de Gemix
+/// Tipos primitivos de Gemix
 enum BasicType {
   Unknow = "?",
   Byte   = "BYTE",
@@ -52,10 +52,11 @@ enum BasicType {
   String = "STRING"
 }
 
+/// Representa un tipo pasado como argumento o devuelto por una función
 struct Type {
   BasicType type;
   size_t indirectionLevel = 0;
-  
+
   public string toString() {
     import std.algorithm.iteration : joiner;
     import std.range : repeat;
@@ -87,6 +88,7 @@ class ModuleInfo {
   }
 }
 
+/// Informacion de una función del módulo
 class FunctionInfo {
   string signature;
   string functionName;
@@ -109,6 +111,7 @@ class FunctionInfo {
   }
 }
 
+/// Información de un parámetro de una función
 class ParamInfo {
   string name;
   Type type;
@@ -281,7 +284,7 @@ if (isInputRange!R)
     auto fTokens = functionsBlock.splitter(ctRegex!`,\s+`).chunks(2).stride(2);
     // Cada entrada en fTokens, es una definición de una funcion : "sigantura", "retorno"
     foreach(fToken; fTokens) {
-      auto functionInfo = processFunctionToken(fToken); 
+      auto functionInfo = processFunctionToken(fToken);
       moduleInfo.functions[functionInfo.functionName] ~= functionInfo;
     }
 
@@ -294,14 +297,29 @@ private FunctionInfo processFunctionToken(R)(R fToken)
 if (isInputRange!R)
 {
   import std.regex : matchFirst;
-  import std.string : strip;
+  import std.string : strip, stripLeft, stripRight;
 
   FunctionInfo funcionInfo = new FunctionInfo();
   funcionInfo.signature = fToken.front.strip("\"");
   funcionInfo.functionName = funcionInfo.signature.matchFirst(ctRegex!`[a-zA-Z0-9_-]+`).hit;
+  foreach(param; funcionInfo.signature[funcionInfo.functionName.length..$].stripLeft("(").stripRight(")").split(ctRegex!`,`)) {
+    funcionInfo.params ~= processSignatureParam(param);
+  }
+
   fToken.popFront();
   funcionInfo.returnType = fToken.front.getTypeFromText;
   return funcionInfo;
+}
+
+private ParamInfo processSignatureParam(R)(R param)
+if (isInputRange!R)
+{
+  ParamInfo paramInfo = new ParamInfo();
+  paramInfo.type = param.getTypeFromText;
+  if (param.findSkip("=")) {
+    paramInfo.defaultValue = param;
+  }
+  return paramInfo;
 }
 
 private Type getTypeFromText(R)(R text)
