@@ -202,7 +202,7 @@ if (isInputRange!R)
   }
 
   fToken.popFront();
-  funcionInfo.returnType = fToken.front.getTypeFromText;
+  funcionInfo.returnType = Type.getFromText(fToken.front);
   return funcionInfo;
 }
 
@@ -210,48 +210,10 @@ private ParamInfo processSignatureParam(R)(R param)
 if (isInputRange!R)
 {
   ParamInfo paramInfo = new ParamInfo();
-  paramInfo.type = param.getTypeFromText;
+  paramInfo.type = Type.getFromText(param);
   if (param.findSkip("=")) {
     paramInfo.defaultValue = param;
   }
   return paramInfo;
 }
 
-private Type getTypeFromText(R)(R text)
-if (isInputRange!R)
-{
-  import std.algorithm.searching : canFind, count;
-
-  Type type;
-  if (text.canFind("I64")) {
-    type.type = BasicType.Int64;
-  } else if (text.canFind("UI64")) {
-    type.type = BasicType.UInt64;
-  } else if (text.canFind("UI32")) {
-    type.type = BasicType.UInt32;
-  } else if (text.canFind("UI16")) {
-    type.type = BasicType.UInt16;
-  } else if (text.canFind("UI8")) {
-    type.type = BasicType.UInt8;
-  } else if (text.canFind("I64")) {
-    type.type = BasicType.Int64;
-  } else if (text.canFind("I32")) {
-    type.type = BasicType.Int32;
-  } else if (text.canFind("I16")) {
-    type.type = BasicType.Int16;
-  } else if (text.canFind("I8")) {
-    type.type = BasicType.Int8;
-  } else if (text.canFind("UI")) {
-    type.type = BasicType.UInt;
-  } else if (text.canFind("I")) {
-    type.type = BasicType.Int;
-  } else if (text.canFind("F")) {
-    type.type = BasicType.Float;
-  } else if (text.canFind("D")) {
-    type.type = BasicType.Double;
-  } else if (text.canFind("S")) {
-    type.type = BasicType.String;
-  }
-  type.indirectionLevel = text.count('P');
-  return type;
-}
