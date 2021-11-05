@@ -80,7 +80,7 @@ class ModuleInfo {
       ~ "Category: " ~ this.category ~ ", "
       ~ "System: " ~ this.system;
     if (functions.length > 0) {
-      ret ~= ", ";
+      ret ~= ", \n";
       import std.conv : to;
       ret ~= functions.to!string;
     }
@@ -274,23 +274,63 @@ if (isInputRange!R)
 private R processFunctionsBlock(R)(R text, ModuleInfo moduleInfo)
 if (isInputRange!R)
 {
+  import std.algorithm.searching : canFind;
   import std.algorithm.mutation : stripLeft, stripRight;
   import std.range : chunks, stride;
   import std.regex : splitter;
+  import std.typecons : Yes;
+
   if (text.findSkip("GMXDEFINE_FUNCTIONS(")) {
     text = text.stripLeft('\r').stripLeft('\n').stripLeft(' ').stripLeft('\t').stripLeft(' ');
-    // TODO
+
+    // Obtenemos todo el bloque dentro de GMXDEFINE_FUNCTIONS
     string functionsBlock = text.findSplitBefore(");")[0].to!string;
-    auto fTokens = functionsBlock.splitter(ctRegex!`,\s+`).chunks(2).stride(2);
-    // Cada entrada en fTokens, es una definición de una funcion : "sigantura", "retorno"
-    foreach(fToken; fTokens) {
-      auto functionInfo = processFunctionToken(fToken);
-      moduleInfo.functions[functionInfo.functionName] ~= functionInfo;
+
+    // Dividimos el bloque en otros que contengan bloques de comentarios y declaraciones de funciones
+    auto fDecAndCommentBlocks = functionsBlock.splitter!(Yes.keepSeparators)(ctRegex!(`/\*\*.*?\*/`, "s"));
+    string functionDocText = "";
+    foreach (fDecAndCommentBlock; fDecAndCommentBlocks) {
+      fDecAndCommentBlock = fDecAndCommentBlock.stripLeft('\r').stripLeft('\n').stripLeft(' ');
+      if (fDecAndCommentBlock.length == 0) {
+        continue;
+      }
+
+      // Obtenemos el texto del bloque de comentarios que enbace estas declaraciones de funciones
+      if (fDecAndCommentBlock.canFind("/**")) {
+        functionDocText = processFunctionCommentBlock(fDecAndCommentBlock);
+      } else {
+        auto fTokens = fDecAndCommentBlock.splitter(ctRegex!`,\s+`).chunks(2).stride(2);
+        // Cada entrada en fTokens, es una definición de una funcion : "sigantura", "retorno"
+        foreach(fToken; fTokens) {
+          if (fToken.empty) {
+            continue;
+          }
+          auto functionInfo = processFunctionToken(fToken);
+          if (!(functionInfo is null)) {
+            functionInfo.docText = functionDocText;
+            moduleInfo.functions[functionInfo.functionName] ~= functionInfo;
+          }
+        }
+      }
     }
 
     text = text.drop(functionsBlock.length);
   }
   return text;
+}
+
+private string processFunctionCommentBlock(R)(ref R text)
+if (isInputRange!R)
+{
+  import std.range : dropBack;
+  import std.regex : matchFirst;
+
+  string ret = "";
+  if(text.findSkip("/**")) {
+    ret = text.matchFirst(ctRegex!(`.*\*/`, "s")).hit.dropBack(2);
+  }
+  text.findSkip("*/");
+  return ret;
 }
 
 private FunctionInfo processFunctionToken(R)(R fToken)
@@ -299,8 +339,13 @@ if (isInputRange!R)
   import std.regex : matchFirst;
   import std.string : strip, stripLeft, stripRight;
 
+  string signature = fToken.front.stripLeft("\r").stripLeft("\n").stripLeft(" ").strip("\"");
+  if (signature.length == 0) {
+    return null;
+  }
+
   FunctionInfo funcionInfo = new FunctionInfo();
-  funcionInfo.signature = fToken.front.strip("\"");
+  funcionInfo.signature = signature;
   funcionInfo.functionName = funcionInfo.signature.matchFirst(ctRegex!`[a-zA-Z0-9_-]+`).hit;
   foreach(param; funcionInfo.signature[funcionInfo.functionName.length..$].stripLeft("(").stripRight(")").split(ctRegex!`,`)) {
     funcionInfo.params ~= processSignatureParam(param);
