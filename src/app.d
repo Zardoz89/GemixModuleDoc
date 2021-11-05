@@ -5,15 +5,20 @@ import std.stdio;
 
 import moduledoc.parseheader;
 import moduledoc.data;
+import moduledoc.generator.markdown;
 
 enum VERSION = "v0.1.0";
 
 int main(string[] args) {
   import std.getopt;
   bool showVersion;
+  bool append;
+  string outputFilename;
   auto helpInformation = getopt(
       args,
-      "v", "Show version", &showVersion
+      "v", "Show version", &showVersion,
+      "a", "Append to output", &append,
+      "o|output", "Output file", &outputFilename,
       );
 
   if (showVersion) {
@@ -40,7 +45,18 @@ int main(string[] args) {
     moduleInfo.parseDocText();
   }
 
-  writeln(moduleInfos);
+  auto output = stdout;
+  if (outputFilename.length > 0) {
+    output = File(outputFilename, append ? "a" : "w");
+  }
+  scope(exit) {
+    if (output != stdout) {
+      output.close();
+    }
+  }
+
+  auto generator = new MarkdownGenerator(moduleInfos);
+  generator.generate(output.lockingTextWriter());
 
   return 0;
 }

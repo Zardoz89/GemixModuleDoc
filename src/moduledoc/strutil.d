@@ -1,4 +1,3 @@
-
 /**
  * Funciones auxiliares para procesar cadenas
  */
