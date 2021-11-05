@@ -209,7 +209,7 @@ class FunctionInfo {
     }
 
     // Una vez extraido la información util de documentaciñon, obtenemos el cuerpo del texto de documentación
-    this.docBody = this.docText.replaceAll(DOC_ENTRYPOINT_REGEX, "").replaceAll(ctRegex!`\s*\*\s*`, "");
+    this.docBody = this.docText.replaceAll(DOC_ENTRYPOINT_REGEX, "").replaceAll(ctRegex!`\s*\*\s*`, "\n");
   }
 
   override
