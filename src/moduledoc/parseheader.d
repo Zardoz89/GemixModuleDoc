@@ -182,7 +182,7 @@ if (isInputRange!R)
   import std.regex : matchFirst;
   import std.string : strip, stripLeft, stripRight;
 
-  string signature = fToken.front.stripLeftEOL.stripLeftSpaces.strip("\"");
+  string signature = fToken.front.stripLeftEOL.stripSpaces.strip("\"");
   if (signature.length == 0) {
     return null;
   }
@@ -190,7 +190,7 @@ if (isInputRange!R)
   FunctionInfo funcionInfo = new FunctionInfo();
   funcionInfo.signature = signature;
   funcionInfo.functionName = funcionInfo.signature.matchFirst(IDENTIFIER_REGEX).hit;
-  foreach(param; funcionInfo.signature[funcionInfo.functionName.length..$].stripParens.split(SPLIT_COMMA_SEPARATOR_REGEX)) {
+  foreach(param; funcionInfo.signature[funcionInfo.functionName.length..$].stripOneLevelParens.split(SPLIT_COMMA_SEPARATOR_REGEX)) {
     funcionInfo.params ~= processSignatureParam(param);
   }
 

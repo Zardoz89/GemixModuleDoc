@@ -7,7 +7,7 @@ import moduledoc.parseheader;
 import moduledoc.data;
 import moduledoc.generator.markdown;
 
-enum VERSION = "v0.1.0";
+enum VERSION = "v0.1.1";
 
 int main(string[] args) {
   import std.getopt;

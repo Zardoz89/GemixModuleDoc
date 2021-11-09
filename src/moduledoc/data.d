@@ -48,7 +48,8 @@ enum BasicType {
   UInt64 = "UINT64",
   Float  = "FLOAT",
   Double = "DOUBLE",
-  String = "STRING"
+  String = "STRING",
+  Type   = "TypeDef"
 }
 
 /// Representa un tipo pasado como argumento o devuelto por una función
@@ -56,13 +57,19 @@ struct Type {
   /// Tipo primitivo
   BasicType type;
 
+  /// Nombre del tipo complejo
+  string typeName;
+
   /// Nivel de indirección. Si es >= 1 es un puntero a algo
   size_t indirectionLevel = 0;
 
   public string toString() {
     import std.algorithm.iteration : joiner;
     import std.range : repeat;
-    return type ~ "*".repeat(this.indirectionLevel).joiner().to!string;
+    if (type != BasicType.Type) {
+      return type ~ "*".repeat(this.indirectionLevel).joiner().to!string;
+    }
+    return typeName ~ "*".repeat(this.indirectionLevel).joiner().to!string;
   }
 
   public static Type getFromText(R)(R text)
@@ -99,6 +106,14 @@ struct Type {
       type.type = BasicType.Double;
     } else if (text.canFind("S")) {
       type.type = BasicType.String;
+    } else if (text.canFind("T")) {
+      type.type = BasicType.Type;
+
+      import std.regex : matchFirst, ctRegex;
+      auto matchTypeName = text.matchFirst(ctRegex!(`\(([a-zA-Z0-9_-]+)\)`));
+      if (!matchTypeName.empty) {
+        type.typeName = matchTypeName[1];
+      }
     }
     type.indirectionLevel = text.count('P');
     return type;

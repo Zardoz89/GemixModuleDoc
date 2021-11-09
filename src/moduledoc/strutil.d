@@ -69,11 +69,32 @@ if (!isSomeString!R && isInputRange!R)
 /**
  * Elimina todos los parentesis en los extremos de la cadena
  */
-R stripParens(R)(R text)
+R stripAllParens(R)(R text)
 if (isSomeString!R)
 {
-  import std.string : stripLeft, stripRight;
-  return text.stripLeft("(").stripRight(")");
+  import std.string : strip;
+  return text.stripLeft("(", ")");
+}
+
+/**
+ * Elimina todos los parentesis en los extremos de la cadena
+ */
+R stripOneLevelParens(R)(R text)
+if (isSomeString!R)
+{
+  if (text.empty) {
+    return text;
+  }
+  if (text[0] == '(') {
+    text = text[1..$];
+  }
+  if (text.empty) {
+    return text;
+  }
+  if (text[$-1] == ')') {
+    text = text[0..$-1];
+  }
+  return text;
 }
 
 

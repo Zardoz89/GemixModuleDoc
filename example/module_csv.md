@@ -1,68 +1,16 @@
-## CSV MODULE
+## Modulo CSV
 
 Category: Generic
 
 System: Common
 
-Lector de ficheros CSV para GEMIX
 
 ### Functions
 
-#### `INT CSV_ReadFileToArray(STRING file, INT size, INT8* pointer)`
+#### `INT CSV_ReadFileToArray(STRING filename, INT size, INT8* arrayPointer)`
 
 
-Lee un fichero CSV y carga el contenido en un array de Gemix
-
-
-##### Parameters
-
-| Name              | Type        |                                      |
-|-------------------|-------------|--------------------------------------|
-| file	| STRING	| Ruta al fichero	|
-| size	| INT	| Tamaño del array	|
-| pointer	| INT8*	| Puntero al array de Gemix. Si es NULL (0), lee el fichero CSV, pero no guarda los datos en ningun array.	|
-
-##### Return
-
-INT
-Nº de elementos leidos en el CSV.
-
-##### Overloads
-
-```gemix
-INT CSV_ReadFileToArray(STRING file, INT size, UINT8* pointer)
-```
-```gemix
-INT CSV_ReadFileToArray(STRING file, INT size, INT16* pointer)
-```
-```gemix
-INT CSV_ReadFileToArray(STRING file, INT size, UINT16* pointer)
-```
-```gemix
-INT CSV_ReadFileToArray(STRING file, INT size, INT32* pointer)
-```
-```gemix
-INT CSV_ReadFileToArray(STRING file, INT size, UINT32* pointer)
-```
-```gemix
-INT CSV_ReadFileToArray(STRING file, INT size, INT64* pointer)
-```
-```gemix
-INT CSV_ReadFileToArray(STRING file, INT size, INT64* pointer)
-```
-```gemix
-INT CSV_ReadFileToArray(STRING file, INT size, FLOAT* pointer)
-```
-```gemix
-INT CSV_ReadFileToArray(STRING file, INT size, DOUBLE* pointer)
-```
-#### `INT CSV_ReadToArray(FLOAT file, INT size, INT8* pointer)`
-
-
-Lee un fichero CSV y carga el contenido en un array de Gemix
-
-Al leer el fichero, deja el cursor del fichero al final del mismo, o donde haya alcanzado el nº maximo de
-elementos que puede leer sin desbordar el array.
+Blabla bla
 
 
 
@@ -70,41 +18,147 @@ elementos que puede leer sin desbordar el array.
 
 | Name              | Type        |                                      |
 |-------------------|-------------|--------------------------------------|
-| file	| FLOAT	| Handler del fichero abierto en Gemix	|
-| size	| INT	| Tamaño del array	|
-| pointer	| INT8*	| Puntero al array de Gemix. Si es NULL (0), lee el fichero CSV, pero no guarda los datos en ningun array.	|
+| filename	| STRING	| Name/Path of the CSV file to open	|
+| size	| INT	| Size of the array	|
+| arrayPointer	| INT8*	| Pointer of the array where to write	|
 
 ##### Return
 
 INT
-Nº de elementos leidos en el CSV.
+number of readed elements on the CSV
 
 ##### Overloads
 
 ```gemix
-INT CSV_ReadToArray(FLOAT file, INT size, UINT8* pointer)
+INT CSV_ReadFileToArray(STRING filename, INT size, UINT8* arrayPointer)
 ```
 ```gemix
-INT CSV_ReadToArray(FLOAT file, INT size, INT16* pointer)
+INT CSV_ReadFileToArray(STRING filename, INT size, INT16* arrayPointer)
 ```
 ```gemix
-INT CSV_ReadToArray(FLOAT file, INT size, UINT16* pointer)
+INT CSV_ReadFileToArray(STRING filename, INT size, UINT16* arrayPointer)
 ```
 ```gemix
-INT CSV_ReadToArray(FLOAT file, INT size, INT32* pointer)
+INT CSV_ReadFileToArray(STRING filename, INT size, INT32* arrayPointer)
 ```
 ```gemix
-INT CSV_ReadToArray(FLOAT file, INT size, UINT32* pointer)
+INT CSV_ReadFileToArray(STRING filename, INT size, UINT32* arrayPointer)
 ```
 ```gemix
-INT CSV_ReadToArray(FLOAT file, INT size, INT64* pointer)
+INT CSV_ReadFileToArray(STRING filename, INT size, INT64* arrayPointer)
 ```
 ```gemix
-INT CSV_ReadToArray(FLOAT file, INT size, INT64* pointer)
+INT CSV_ReadFileToArray(STRING filename, INT size, INT64* arrayPointer)
 ```
 ```gemix
-INT CSV_ReadToArray(FLOAT file, INT size, FLOAT* pointer)
+INT CSV_ReadFileToArray(STRING filename, INT size, FLOAT* arrayPointer)
 ```
 ```gemix
-INT CSV_ReadToArray(FLOAT file, INT size, DOUBLE* pointer)
+INT CSV_ReadFileToArray(STRING filename, INT size, DOUBLE* arrayPointer)
+```
+#### `INT CSV_ReadToArray(INT , INT , INT8* )`
+
+ Read from opened file 
+
+##### Parameters
+
+| Name              | Type        |                                      |
+|-------------------|-------------|--------------------------------------|
+| 	| INT	| 	|
+| 	| INT	| 	|
+| 	| INT8*	| 	|
+
+##### Return
+
+INT
+
+##### Overloads
+
+```gemix
+INT CSV_ReadToArray(INT , INT , UINT8* )
+```
+```gemix
+INT CSV_ReadToArray(INT , INT , INT16* )
+```
+```gemix
+INT CSV_ReadToArray(INT , INT , UINT16* )
+```
+```gemix
+INT CSV_ReadToArray(INT , INT , INT32* )
+```
+```gemix
+INT CSV_ReadToArray(INT , INT , UINT32* )
+```
+```gemix
+INT CSV_ReadToArray(INT , INT , INT64* )
+```
+```gemix
+INT CSV_ReadToArray(INT , INT , INT64* )
+```
+```gemix
+INT CSV_ReadToArray(INT , INT , FLOAT* )
+```
+```gemix
+INT CSV_ReadToArray(INT , INT , DOUBLE* )
+```
+#### `INT sdk_copy(sdk_color* , sdk_color* )`
+
+ Copy 
+
+##### Parameters
+
+| Name              | Type        |                                      |
+|-------------------|-------------|--------------------------------------|
+| 	| sdk_color*	| 	|
+| 	| sdk_color*	| 	|
+
+##### Return
+
+INT
+
+#### `FLOAT sdk_min(INT , INT )`
+
+ Minimimize 
+
+##### Parameters
+
+| Name              | Type        |                                      |
+|-------------------|-------------|--------------------------------------|
+| 	| INT	| 	|
+| 	| INT	| 	|
+
+##### Return
+
+FLOAT
+
+##### Overloads
+
+```gemix
+FLOAT sdk_min(FLOAT , FLOAT )
+```
+```gemix
+sdk_color sdk_min(sdk_color , sdk_color )
+```
+#### `INT sdk_swap(vec2* , vec2* )`
+
+ Swap 
+
+##### Parameters
+
+| Name              | Type        |                                      |
+|-------------------|-------------|--------------------------------------|
+| 	| vec2*	| 	|
+| 	| vec2*	| 	|
+
+##### Return
+
+INT
+
+##### Overloads
+
+```gemix
+INT sdk_swap(vec3* , vec3* )
+```
+```gemix
+INT sdk_swap(vec4* , vec4* )
 ```
