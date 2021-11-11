@@ -60,6 +60,14 @@ class MarkdownGenerator {
     }
     sink.put("\n\n");
 
+    if (moduleInfo.constInfos.length > 0) {
+      sink.put("## Consts");
+      sink.put("\n\n");
+
+      this.generateConsts(sink , moduleInfo.constInfos);
+      sink.put("\n\n");
+    }
+
     if (moduleInfo.functions.length > 0) {
       import std.array : array;
       import std.algorithm.sorting : sort;
@@ -70,32 +78,60 @@ class MarkdownGenerator {
       auto sortedFunctionNames = moduleInfo.sortedFunctionNames;
       //moduleInfo.functions.byKey().array.sort!("a < b");
       foreach(functionName; sortedFunctionNames) {
-        this.generate(sink, moduleInfo.functions[functionName]);
+        this.generateFunctions(sink, moduleInfo.functions[functionName]);
         sink.put("\n\n");
       }
     }
   }
 
-  private void generate(R)(R sink, FunctionInfo[] functionInfos)
+  private void generateConsts(R)(R sink, ConstInfo[] constInfos)
+  if (isOutputRange!(R, char)) {
+    if (constInfos.empty) {
+      return;
+    }
+
+    foreach(constInfo; constInfos) {
+      this.generateConst(sink, constInfo);
+    }
+  }
+
+  private void generateConst(R)(R sink, ConstInfo constInfo)
+  if (isOutputRange!(R, char)) {
+    sink.put(" * `");
+    sink.put(constInfo.type);
+    sink.put(" ");
+    sink.put(constInfo.name);
+    sink.put(" = ");
+    sink.put(constInfo.value);
+    sink.put("`\n");
+    if (constInfo.docText.length > 0) {
+      sink.put("\t");
+      sink.put(constInfo.docText);
+      sink.put("\n");
+    }
+    sink.put("\n");
+  }
+
+  private void generateFunctions(R)(R sink, FunctionInfo[] functionInfos)
   if (isOutputRange!(R, char)) {
     if (functionInfos.empty) {
       return;
     }
 
-    this.generate(sink, functionInfos[0], true);
+    this.generateFunction(sink, functionInfos[0], true);
     functionInfos = functionInfos[1..$];
     if (functionInfos.length > 0) {
       sink.put("#### Overloads");
       sink.put("\n\n");
 
       foreach(functionInfo; functionInfos) {
-        this.generate(sink, functionInfo, false);
+        this.generateFunction(sink, functionInfo, false);
       }
     }
 
   }
 
-  private void generate(R)(R sink, FunctionInfo functionInfo, bool showDocumentation)
+  private void generateFunction(R)(R sink, FunctionInfo functionInfo, bool showDocumentation)
   if (isOutputRange!(R, char)) {
     if (showDocumentation) {
       sink.put("### `");

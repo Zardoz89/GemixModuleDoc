@@ -16,8 +16,10 @@ GMXDEFINE_LIBRARY_DEPENDENCIES(GMXEXT_mod_sdkexample,
 
 GMXDEFINE_LIBRARY_EXPORTS(GMXEXT_mod_sdkexample,
 	/* CONSTS */
-	GMXDEFINE_CONSTS_INT("sdk_colorchannel_min",   0,
-	                     "sdk_colorchannel_max", 255
+	GMXDEFINE_CONSTS_INT(
+	  /** Minimal valid value for a color channel */
+	  "sdk_colorchannel_min",   0,
+	  "sdk_colorchannel_max", 255
 	);
 	GMXDEFINE_CONSTS_FLOAT("sdk_colorchannel_min_normalized", 0.0f,
 	                       "sdk_colorchannel_max_normalized", 1.0f

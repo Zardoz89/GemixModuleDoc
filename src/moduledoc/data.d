@@ -136,6 +136,9 @@ class GemixModuleInfo {
   /// Tipo de sistema del módulo
   System system = System.Null;
 
+  /// Contantes definidas en el modulo
+  ConstInfo[] constInfos;
+
   /// Información de las funciones definidas en el módulo
   FunctionInfo[][string] functions;
 
@@ -182,6 +185,20 @@ class GemixModuleInfo {
   }
 }
 
+struct ConstInfo {
+  /// Nombre de la constante
+  string name;
+
+  /// Tipado de la constante
+  string type;
+
+  /// Valor de la constante
+  string value;
+
+  /// Documentación de la constante
+  string docText;
+}
+
 /// Informacion de una función del módulo
 class FunctionInfo {
 
@@ -206,6 +223,7 @@ class FunctionInfo {
   /// Bloque de texto de documentación del valor retornado
   string docReturnBody;
 
+  /// Es una función marcada como *legacy* y que por lo tanto no se recomienda usar.
   bool isLegacy;
 
   /// Parsea el texto de documentación del módulo

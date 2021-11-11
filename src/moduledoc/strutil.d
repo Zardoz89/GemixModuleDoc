@@ -67,6 +67,16 @@ if (!isSomeString!R && isInputRange!R)
 }
 
 /**
+ * Elimina todos los fines de liena al final de la cadena
+ */
+R stripRightEOL(R)(R text)
+if (isSomeString!R)
+{
+  import std.string : stripRight;
+  return text.stripRight("\n").stripRight("\r");
+}
+
+/**
  * Elimina todos los parentesis en los extremos de la cadena
  */
 R stripAllParens(R)(R text)

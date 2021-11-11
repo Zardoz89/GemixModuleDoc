@@ -30,6 +30,7 @@ GemixModuleInfo processFile(string fileName) {
   return moduleInfo;
 }
 
+/// Procesa el comentario cabecera del modulo
 private R processHeaderCommentBlock(R)(R text, GemixModuleInfo moduleInfo)
 if (isInputRange!R)
 {
@@ -43,6 +44,7 @@ if (isInputRange!R)
   return text;
 }
 
+/// Procesa las propiedades del modulo
 private R processLibraryProperties(R)(R text, GemixModuleInfo moduleInfo)
 if (isInputRange!R)
 {
@@ -106,15 +108,77 @@ if (isInputRange!R)
   return text;
 }
 
+/// Procesa las declaraciones publicas del modulo
 private R processLibraryExportsBlock(R)(R text, GemixModuleInfo moduleInfo)
 if (isInputRange!R)
 {
   if (text.findSkip("GMXDEFINE_LIBRARY_EXPORTS")) {
-    text = text.processFunctionsBlock(moduleInfo);
+    text = text
+      .processConstsBlock(moduleInfo)
+      .processFunctionsBlock(moduleInfo);
   }
   return text;
 }
 
+/// Procesa los bloques de declaraciones de constantes del modulo
+private R processConstsBlock(R)(R text, GemixModuleInfo moduleInfo)
+if (isInputRange!R)
+{
+  while (text.findSkip("GMXDEFINE_CONSTS_")) {
+    string constBlock = text.findSplitBefore(");")[0].to!string;
+    auto constBlockLength = constBlock.length;
+
+    constBlock.processConstBlock(moduleInfo);
+
+    text = text.drop(constBlockLength);
+  }
+  return text;
+}
+
+/// Procesa un bloque de declaraciones de constantes del modulo
+private void processConstBlock(string constBlock, GemixModuleInfo moduleInfo)
+{
+  import std.algorithm.searching : canFind;
+  import std.range : chunks, drop;
+  import std.regex : ctRegex, matchFirst, splitter;
+  import std.string : strip;
+  import std.typecons : Yes;
+
+  auto match = constBlock.matchFirst(ctRegex!(`([A-Z]+[0-9]{0,2})(?:\()`));
+  if (match.length > 0) {
+    string type = match[1];
+    constBlock = constBlock.drop(type.length + 1);
+
+    // Dividimos el bloque en subloques que contengan bloques de comentarios y constantes
+    auto constDecAndCommentBlocks = constBlock.splitter!(Yes.keepSeparators)(COMMENT_BLOCK_REGEX);
+    string constDocText = "";
+    foreach (constDecAndCommentBlock; constDecAndCommentBlocks) {
+      constDecAndCommentBlock = constDecAndCommentBlock.stripLeftEOL.stripLeftSpaces;
+      if (constDecAndCommentBlock.length == 0) {
+        continue;
+      }
+
+      // Obtenemos el texto del bloque de comentarios que enbace estas declaraciones de funciones
+      if (constDecAndCommentBlock.canFind("/**")) {
+        constDocText = processCommentBlock(constDecAndCommentBlock);
+      } else {
+        // Rango de pares "XXXX" valor
+        auto constPairs = constDecAndCommentBlock.splitter(SPLIT_COMMA_SPACE_SEPARATOR_REGEX).chunks(2);
+        foreach(constPair ; constPairs) {
+          ConstInfo constInfo = {name: constPair.front.stripSpaces.stripRightEOL.strip("\""), type: type};
+          constPair.popFront;
+          constInfo.value = constPair.front.stripSpaces.stripRightEOL;
+          constInfo.docText = constDocText.stripSpaces;
+          constDocText = "";
+
+          moduleInfo.constInfos ~= constInfo;
+        }
+      }
+    }
+  }
+}
+
+/// Procesa las declaraciones de funciones del modulo
 private R processFunctionsBlock(R)(R text, GemixModuleInfo moduleInfo)
 if (isInputRange!R)
 {
@@ -141,7 +205,7 @@ if (isInputRange!R)
 
       // Obtenemos el texto del bloque de comentarios que enbace estas declaraciones de funciones
       if (fDecAndCommentBlock.canFind("/**")) {
-        functionDocText = processFunctionCommentBlock(fDecAndCommentBlock);
+        functionDocText = processCommentBlock(fDecAndCommentBlock);
       } else {
         auto fTokens = fDecAndCommentBlock.splitter(SPLIT_COMMA_SPACE_SEPARATOR_REGEX).chunks(2).stride(2);
         // Cada entrada en fTokens, es una definición de una funcion : "sigantura", "retorno"
@@ -175,7 +239,7 @@ if (isInputRange!R)
   return text;
 }
 
-private string processFunctionCommentBlock(R)(ref R text)
+private string processCommentBlock(R)(ref R text)
 if (isInputRange!R)
 {
   import std.range : dropBack;
