@@ -46,6 +46,11 @@ GMXDEFINE_LIBRARY_EXPORTS(GMXEXT_mod_sdkexample,
 	    "sdk_min(I,I)"                         , "F"           , 0, GMXEXT_sdkexample_sdk_min ,
       "sdk_min(F,F)"                         , "F"           , 0, GMXEXT_sdkexample_sdk_minF,
       "sdk_min(T(sdk_color),T(sdk_color))"   , "T(sdk_color)", 0, GMXEXT_sdkexample_sdk_minT,
+  /**
+   * Old way
+   * @legacy
+   */
+      "min_sdk(T(sdk_color),T(sdk_color))"   , "T(sdk_color)", 0, GMXEXT_sdkexample_sdk_minT,
       "sdk_copy(TP(sdk_color),TP(sdk_color))", "I"           , 0, GMXEXT_sdkexample_sdk_copy,
   /**
    * Swaps two values

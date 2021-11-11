@@ -8,21 +8,6 @@ System: Common
 
 ## Functions
 
-### `INT sdk_copy(sdk_color* , sdk_color* )`
-
-#### Parameters
-
-| Name              | Type        |                                      |
-|-------------------|-------------|--------------------------------------|
-| 	| sdk_color*	| 	|
-| 	| sdk_color*	| 	|
-
-#### Return
-
-INT
-
-
-
 ### `FLOAT sdk_min(INT value1, INT value2)`
 
 
@@ -48,6 +33,40 @@ FLOAT sdk_min(FLOAT value1, FLOAT value2)
 ```gemix
 sdk_color sdk_min(sdk_color value1, sdk_color value2)
 ```
+
+
+### `sdk_color min_sdk(sdk_color , sdk_color )`
+
+
+Old way
+
+
+#### Parameters
+
+| Name              | Type        |                                      |
+|-------------------|-------------|--------------------------------------|
+| 	| sdk_color	| 	|
+| 	| sdk_color	| 	|
+
+#### Return
+
+sdk_color
+
+
+
+### `INT sdk_copy(sdk_color* , sdk_color* )`
+
+#### Parameters
+
+| Name              | Type        |                                      |
+|-------------------|-------------|--------------------------------------|
+| 	| sdk_color*	| 	|
+| 	| sdk_color*	| 	|
+
+#### Return
+
+INT
+
 
 
 ### `INT sdk_swap(vec2* , vec2* )`

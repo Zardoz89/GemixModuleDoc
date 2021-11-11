@@ -106,23 +106,6 @@ INT CSV_ReadToArray(INT , INT , DOUBLE* )
 ```
 
 
-### `INT sdk_copy(sdk_color* , sdk_color* )`
-
- Copy 
-
-#### Parameters
-
-| Name              | Type        |                                      |
-|-------------------|-------------|--------------------------------------|
-| 	| sdk_color*	| 	|
-| 	| sdk_color*	| 	|
-
-#### Return
-
-INT
-
-
-
 ### `FLOAT sdk_min(INT , INT )`
 
  Minimimize 
@@ -146,6 +129,23 @@ FLOAT sdk_min(FLOAT , FLOAT )
 ```gemix
 sdk_color sdk_min(sdk_color , sdk_color )
 ```
+
+
+### `INT sdk_copy(sdk_color* , sdk_color* )`
+
+ Copy 
+
+#### Parameters
+
+| Name              | Type        |                                      |
+|-------------------|-------------|--------------------------------------|
+| 	| sdk_color*	| 	|
+| 	| sdk_color*	| 	|
+
+#### Return
+
+INT
+
 
 
 ### `INT sdk_swap(vec2* , vec2* )`

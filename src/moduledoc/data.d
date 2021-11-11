@@ -139,6 +139,9 @@ class GemixModuleInfo {
   /// Información de las funciones definidas en el módulo
   FunctionInfo[][string] functions;
 
+  /// Lista con el orden de insercción del nombre de las funciones
+  string[] sortedFunctionNames;
+
   /// Bloque de texto de documentación en bruto
   string docText;
 

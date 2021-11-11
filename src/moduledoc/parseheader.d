@@ -160,6 +160,11 @@ if (isInputRange!R)
             functionInfo.docText = functionDocText;
             lastFunctionName = functionInfo.functionName;
             moduleInfo.functions[lastFunctionName] ~= functionInfo;
+
+            // Guardamos el orden de aparición de las funciones en fichero C/C++
+            if (!moduleInfo.sortedFunctionNames.canFind(lastFunctionName)) {
+              moduleInfo.sortedFunctionNames ~= lastFunctionName;
+            }
           }
         }
       }

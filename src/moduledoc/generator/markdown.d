@@ -67,7 +67,8 @@ class MarkdownGenerator {
       sink.put("## Functions");
       sink.put("\n\n");
 
-      auto sortedFunctionNames = moduleInfo.functions.byKey().array.sort!("a < b");
+      auto sortedFunctionNames = moduleInfo.sortedFunctionNames;
+      //moduleInfo.functions.byKey().array.sort!("a < b");
       foreach(functionName; sortedFunctionNames) {
         this.generate(sink, moduleInfo.functions[functionName]);
         sink.put("\n\n");
