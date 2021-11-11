@@ -13,6 +13,9 @@ System: Common
 
 Blabla bla
 
+Name/Path of the CSV file to open
+Size of the array
+Pointer of the array where to write
 
 
 #### Parameters

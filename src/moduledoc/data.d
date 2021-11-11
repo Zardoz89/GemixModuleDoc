@@ -206,11 +206,13 @@ class FunctionInfo {
   /// Bloque de texto de documentación del valor retornado
   string docReturnBody;
 
+  bool isLegacy;
+
   /// Parsea el texto de documentación del módulo
   public void parseDocText() {
     import std.regex : matchAll, matchFirst, replaceAll, ctRegex;
 
-    auto paramMatches = this.docText.matchAll(ctRegex!(`@param\s+([a-zA-Z][a-zA-Z0-9_-]*)(?:\s+(.*)){0,1}?`));
+    auto paramMatches = this.docText.matchAll(PARAM_REGEX);
     size_t index;
     foreach(paramMatch ; paramMatches) {
       if (index >= this.params.length) {
@@ -220,14 +222,19 @@ class FunctionInfo {
       this.params[index].docText = paramMatch[2].stripSpaces;
       index++;
     }
+    this.docText = this.docText.replaceAll(PARAM_REGEX, "");
 
-    auto returnMatch = this.docText.matchFirst(ctRegex!`@return\s+(.*)`);
+    auto returnMatch = this.docText.matchFirst(RETURN_REGEX);
     if (returnMatch.length > 0) {
       this.docReturnBody = returnMatch[1].stripSpaces;
     }
+    this.docText = this.docText.replaceAll(RETURN_REGEX, "");
+
+    this.isLegacy = this.docText.matchFirst(LEGACY_REGEX).length > 0;
+    this.docText = this.docText.replaceAll(LEGACY_REGEX, "");
 
     // Una vez extraido la información util de documentaciñon, obtenemos el cuerpo del texto de documentación
-    this.docBody = this.docText.replaceAll(DOC_ENTRYPOINT_REGEX, "").replaceAll(ctRegex!`\s*\*\s*`, "\n");
+    this.docBody = this.docText/*.replaceAll(DOC_ENTRYPOINT_REGEX, "")*/.replaceAll(ctRegex!`\s*\*\s*`, "\n");
   }
 
   override
@@ -243,6 +250,9 @@ class FunctionInfo {
     ret ~= ", Params: " ~ this.params.to!string;
     if (docBody.length > 0) {
       ret ~= ", " ~ docBody;
+    }
+    if (this.isLegacy) {
+      ret ~= ", legacy";
     }
     return "f{" ~ ret ~ "}\n";
   }

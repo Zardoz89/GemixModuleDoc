@@ -14,6 +14,7 @@ System: Common
 Returns the lower/minimal value from two values
 
 
+
 #### Parameters
 
 | Name              | Type        |                                      |
@@ -37,6 +38,7 @@ sdk_color sdk_min(sdk_color value1, sdk_color value2)
 
 ### `sdk_color min_sdk(sdk_color , sdk_color )`
 
+**LEGACY**
 
 Old way
 

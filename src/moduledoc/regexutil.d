@@ -26,3 +26,12 @@ package enum IDENTIFIER_REGEX = ctRegex!(`[a-zA-Z_][a-zA-Z0-9_-]+`);
 /// Regex para encontrar una entrada de documentación estilo JavaDoc/JsDoc/DOxygen
 package enum DOC_ENTRYPOINT_REGEX = ctRegex!(`@\w+\s*(.*)\n`, "s");
 
+/// Regex para encontrar una entrada @param XXXX ...
+package enum PARAM_REGEX = ctRegex!(`@param\s+([a-zA-Z][a-zA-Z0-9_-]*)(?:\s+(.*)){0,1}?`);
+
+/// Regex para encontrar una entrada @return XXXX
+package enum RETURN_REGEX = ctRegex!`@return\s+(.*)`;
+
+/// Regex para encontrar una entrada @legacy
+package enum LEGACY_REGEX = ctRegex!(`@legacy(?:\s+(.*)){0,1}?`);
+

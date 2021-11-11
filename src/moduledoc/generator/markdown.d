@@ -102,6 +102,10 @@ class MarkdownGenerator {
       this.generateFunctionSignature(sink, functionInfo);
       sink.put("`\n\n");
 
+      if (functionInfo.isLegacy) {
+        sink.put("**LEGACY**\n");
+      }
+
       if (functionInfo.docBody.length > 0) {
         sink.put(functionInfo.docBody);
         sink.put("\n\n");
