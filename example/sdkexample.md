@@ -9,14 +9,12 @@ System: Common
 ## Consts
 
  * `INT sdk_colorchannel_min = 0`
+	
 	Minimal valid value for a color channel
-
+	
  * `INT sdk_colorchannel_max = 255`
-
  * `FLOAT sdk_colorchannel_min_normalized = 0.0f`
-
  * `FLOAT sdk_colorchannel_max_normalized = 1.0f`
-
 
 
 ## Functions

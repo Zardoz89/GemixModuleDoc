@@ -105,11 +105,11 @@ class MarkdownGenerator {
     sink.put(constInfo.value);
     sink.put("`\n");
     if (constInfo.docText.length > 0) {
+      sink.put("\t\n");
       sink.put("\t");
       sink.put(constInfo.docText);
-      sink.put("\n");
+      sink.put("\n\t\n");
     }
-    sink.put("\n");
   }
 
   private void generateFunctions(R)(R sink, FunctionInfo[] functionInfos)
