@@ -37,13 +37,22 @@ GMXDEFINE_LIBRARY_EXPORTS(GMXEXT_mod_sdkexample,
 	);
 
 	/* FUNCTIONS */
-	GMXDEFINE_FUNCTIONS("sdk_min(I,I)"                         , "F"           , 0, GMXEXT_sdkexample_sdk_min ,
-	                    "sdk_min(F,F)"                         , "F"           , 0, GMXEXT_sdkexample_sdk_minF,
-	                    "sdk_min(T(sdk_color),T(sdk_color))"   , "T(sdk_color)", 0, GMXEXT_sdkexample_sdk_minT,
-	                    "sdk_copy(TP(sdk_color),TP(sdk_color))", "I"           , 0, GMXEXT_sdkexample_sdk_copy,
-	                    "sdk_swap(TP(vec2),TP(vec2))"          , "I"           , 0, GMXEXT_sdkexample_sdk_swap_vec2,
-	                    "sdk_swap(TP(vec3),TP(vec3))"          , "I"           , 0, GMXEXT_sdkexample_sdk_swap_vec3,
-	                    "sdk_swap(TP(vec4),TP(vec4))"          , "I"           , 0, GMXEXT_sdkexample_sdk_swap_vec4
+	GMXDEFINE_FUNCTIONS(
+	/**
+	 * Returns the lower/minimal value from two values
+	 * @param value1
+	 * @param value2
+	 */
+	    "sdk_min(I,I)"                         , "F"           , 0, GMXEXT_sdkexample_sdk_min ,
+      "sdk_min(F,F)"                         , "F"           , 0, GMXEXT_sdkexample_sdk_minF,
+      "sdk_min(T(sdk_color),T(sdk_color))"   , "T(sdk_color)", 0, GMXEXT_sdkexample_sdk_minT,
+      "sdk_copy(TP(sdk_color),TP(sdk_color))", "I"           , 0, GMXEXT_sdkexample_sdk_copy,
+  /**
+   * Swaps two values
+   */
+      "sdk_swap(TP(vec2),TP(vec2))"          , "I"           , 0, GMXEXT_sdkexample_sdk_swap_vec2,
+      "sdk_swap(TP(vec3),TP(vec3))"          , "I"           , 0, GMXEXT_sdkexample_sdk_swap_vec3,
+      "sdk_swap(TP(vec4),TP(vec4))"          , "I"           , 0, GMXEXT_sdkexample_sdk_swap_vec4
 	);
 
 	/* ENTRYPOINTS */

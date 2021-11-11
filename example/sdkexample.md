@@ -1,60 +1,73 @@
-## SDK Example
+SDK Example
+-----------
 
 Category: Generic
 
 System: Common
 
 
-### Functions
+## Functions
 
-#### `INT sdk_copy(sdk_color* , sdk_color* )`
+### `INT sdk_copy(sdk_color* , sdk_color* )`
 
-##### Parameters
+#### Parameters
 
 | Name              | Type        |                                      |
 |-------------------|-------------|--------------------------------------|
 | 	| sdk_color*	| 	|
 | 	| sdk_color*	| 	|
 
-##### Return
+#### Return
 
 INT
 
-#### `FLOAT sdk_min(INT , INT )`
 
-##### Parameters
+
+### `FLOAT sdk_min(INT value1, INT )`
+
+
+Returns the lower/minimal value from two values
+
+
+#### Parameters
 
 | Name              | Type        |                                      |
 |-------------------|-------------|--------------------------------------|
-| 	| INT	| 	|
+| value1	| INT	| * @param value2	|
 | 	| INT	| 	|
 
-##### Return
+#### Return
 
 FLOAT
 
-##### Overloads
+#### Overloads
 
 ```gemix
-FLOAT sdk_min(FLOAT , FLOAT )
+FLOAT sdk_min(FLOAT value1, FLOAT )
 ```
 ```gemix
-sdk_color sdk_min(sdk_color , sdk_color )
+sdk_color sdk_min(sdk_color value1, sdk_color )
 ```
-#### `INT sdk_swap(vec2* , vec2* )`
 
-##### Parameters
+
+### `INT sdk_swap(vec2* , vec2* )`
+
+
+Swaps two values
+   
+
+#### Parameters
 
 | Name              | Type        |                                      |
 |-------------------|-------------|--------------------------------------|
 | 	| vec2*	| 	|
 | 	| vec2*	| 	|
 
-##### Return
+#### Return
 
 INT
 
-##### Overloads
+#### Overloads
 
 ```gemix
 INT sdk_swap(vec3* , vec3* )
@@ -62,3 +75,5 @@ INT sdk_swap(vec3* , vec3* )
 ```gemix
 INT sdk_swap(vec4* , vec4* )
 ```
+
+

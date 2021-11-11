@@ -35,11 +35,15 @@ class MarkdownGenerator {
 
   private void generate(R)(R sink, GemixModuleInfo moduleInfo)
   if (isOutputRange!(R, char)) {
-    sink.put("## ");
     if (moduleInfo.name.length > 0) {
       sink.put(moduleInfo.name);
+      sink.put("\n");
+      foreach(i; 0 .. moduleInfo.name.length) {
+        sink.put("-");
+      }
     } else {
-      sink.put("noname");
+      sink.put("noname\n");
+      sink.put("------");
     }
     sink.put("\n\n");
 
@@ -60,12 +64,13 @@ class MarkdownGenerator {
       import std.array : array;
       import std.algorithm.sorting : sort;
 
-      sink.put("### Functions");
+      sink.put("## Functions");
       sink.put("\n\n");
 
       auto sortedFunctionNames = moduleInfo.functions.byKey().array.sort!("a < b");
       foreach(functionName; sortedFunctionNames) {
         this.generate(sink, moduleInfo.functions[functionName]);
+        sink.put("\n\n");
       }
     }
   }
@@ -79,7 +84,7 @@ class MarkdownGenerator {
     this.generate(sink, functionInfos[0], true);
     functionInfos = functionInfos[1..$];
     if (functionInfos.length > 0) {
-      sink.put("##### Overloads");
+      sink.put("#### Overloads");
       sink.put("\n\n");
 
       foreach(functionInfo; functionInfos) {
@@ -92,7 +97,7 @@ class MarkdownGenerator {
   private void generate(R)(R sink, FunctionInfo functionInfo, bool showDocumentation)
   if (isOutputRange!(R, char)) {
     if (showDocumentation) {
-      sink.put("#### `");
+      sink.put("### `");
       this.generateFunctionSignature(sink, functionInfo);
       sink.put("`\n\n");
 
@@ -102,7 +107,7 @@ class MarkdownGenerator {
       }
 
       if (functionInfo.params.length > 0) {
-        sink.put("##### Parameters");
+        sink.put("#### Parameters");
         sink.put("\n\n");
         sink.put("| Name              | Type        |                                      |\n");
         sink.put("|-------------------|-------------|--------------------------------------|\n");
@@ -119,7 +124,7 @@ class MarkdownGenerator {
         sink.put("\n");
       }
 
-      sink.put("##### Return");
+      sink.put("#### Return");
       sink.put("\n\n");
       sink.put(functionInfo.returnType.toString);
       sink.put("\n");

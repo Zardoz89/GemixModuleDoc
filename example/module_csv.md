@@ -1,20 +1,21 @@
-## Modulo CSV
+Modulo CSV
+----------
 
 Category: Generic
 
 System: Common
 
 
-### Functions
+## Functions
 
-#### `INT CSV_ReadFileToArray(STRING filename, INT size, INT8* arrayPointer)`
+### `INT CSV_ReadFileToArray(STRING filename, INT size, INT8* arrayPointer)`
 
 
 Blabla bla
 
 
 
-##### Parameters
+#### Parameters
 
 | Name              | Type        |                                      |
 |-------------------|-------------|--------------------------------------|
@@ -22,12 +23,12 @@ Blabla bla
 | size	| INT	| Size of the array	|
 | arrayPointer	| INT8*	| Pointer of the array where to write	|
 
-##### Return
+#### Return
 
 INT
 number of readed elements on the CSV
 
-##### Overloads
+#### Overloads
 
 ```gemix
 INT CSV_ReadFileToArray(STRING filename, INT size, UINT8* arrayPointer)
@@ -56,11 +57,13 @@ INT CSV_ReadFileToArray(STRING filename, INT size, FLOAT* arrayPointer)
 ```gemix
 INT CSV_ReadFileToArray(STRING filename, INT size, DOUBLE* arrayPointer)
 ```
-#### `INT CSV_ReadToArray(INT , INT , INT8* )`
+
+
+### `INT CSV_ReadToArray(INT , INT , INT8* )`
 
  Read from opened file 
 
-##### Parameters
+#### Parameters
 
 | Name              | Type        |                                      |
 |-------------------|-------------|--------------------------------------|
@@ -68,11 +71,11 @@ INT CSV_ReadFileToArray(STRING filename, INT size, DOUBLE* arrayPointer)
 | 	| INT	| 	|
 | 	| INT8*	| 	|
 
-##### Return
+#### Return
 
 INT
 
-##### Overloads
+#### Overloads
 
 ```gemix
 INT CSV_ReadToArray(INT , INT , UINT8* )
@@ -101,37 +104,41 @@ INT CSV_ReadToArray(INT , INT , FLOAT* )
 ```gemix
 INT CSV_ReadToArray(INT , INT , DOUBLE* )
 ```
-#### `INT sdk_copy(sdk_color* , sdk_color* )`
+
+
+### `INT sdk_copy(sdk_color* , sdk_color* )`
 
  Copy 
 
-##### Parameters
+#### Parameters
 
 | Name              | Type        |                                      |
 |-------------------|-------------|--------------------------------------|
 | 	| sdk_color*	| 	|
 | 	| sdk_color*	| 	|
 
-##### Return
+#### Return
 
 INT
 
-#### `FLOAT sdk_min(INT , INT )`
+
+
+### `FLOAT sdk_min(INT , INT )`
 
  Minimimize 
 
-##### Parameters
+#### Parameters
 
 | Name              | Type        |                                      |
 |-------------------|-------------|--------------------------------------|
 | 	| INT	| 	|
 | 	| INT	| 	|
 
-##### Return
+#### Return
 
 FLOAT
 
-##### Overloads
+#### Overloads
 
 ```gemix
 FLOAT sdk_min(FLOAT , FLOAT )
@@ -139,22 +146,24 @@ FLOAT sdk_min(FLOAT , FLOAT )
 ```gemix
 sdk_color sdk_min(sdk_color , sdk_color )
 ```
-#### `INT sdk_swap(vec2* , vec2* )`
+
+
+### `INT sdk_swap(vec2* , vec2* )`
 
  Swap 
 
-##### Parameters
+#### Parameters
 
 | Name              | Type        |                                      |
 |-------------------|-------------|--------------------------------------|
 | 	| vec2*	| 	|
 | 	| vec2*	| 	|
 
-##### Return
+#### Return
 
 INT
 
-##### Overloads
+#### Overloads
 
 ```gemix
 INT sdk_swap(vec3* , vec3* )
@@ -162,3 +171,5 @@ INT sdk_swap(vec3* , vec3* )
 ```gemix
 INT sdk_swap(vec4* , vec4* )
 ```
+
+
