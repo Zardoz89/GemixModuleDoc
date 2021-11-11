@@ -19,9 +19,9 @@ Blabla bla
 
 | Name              | Type        |                                      |
 |-------------------|-------------|--------------------------------------|
-| filename	| STRING	| Name/Path of the CSV file to open	|
-| size	| INT	| Size of the array	|
-| arrayPointer	| INT8*	| Pointer of the array where to write	|
+| filename	| STRING	| 	|
+| size	| INT	| 	|
+| arrayPointer	| INT8*	| 	|
 
 #### Return
 

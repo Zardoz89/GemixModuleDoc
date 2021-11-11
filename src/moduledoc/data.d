@@ -207,7 +207,7 @@ class FunctionInfo {
   public void parseDocText() {
     import std.regex : matchAll, matchFirst, replaceAll, ctRegex;
 
-    auto paramMatches = this.docText.matchAll(ctRegex!(`@param\s+([a-zA-Z][a-zA-Z0-9_-]*)\s+(.*)`));
+    auto paramMatches = this.docText.matchAll(ctRegex!(`@param\s+([a-zA-Z][a-zA-Z0-9_-]*)(?:\s+(.*)){0,1}?`));
     size_t index;
     foreach(paramMatch ; paramMatches) {
       if (index >= this.params.length) {

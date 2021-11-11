@@ -23,7 +23,7 @@ INT
 
 
 
-### `FLOAT sdk_min(INT value1, INT )`
+### `FLOAT sdk_min(INT value1, INT value2)`
 
 
 Returns the lower/minimal value from two values
@@ -33,8 +33,8 @@ Returns the lower/minimal value from two values
 
 | Name              | Type        |                                      |
 |-------------------|-------------|--------------------------------------|
-| value1	| INT	| * @param value2	|
-| 	| INT	| 	|
+| value1	| INT	| 	|
+| value2	| INT	| 	|
 
 #### Return
 
@@ -43,10 +43,10 @@ FLOAT
 #### Overloads
 
 ```gemix
-FLOAT sdk_min(FLOAT value1, FLOAT )
+FLOAT sdk_min(FLOAT value1, FLOAT value2)
 ```
 ```gemix
-sdk_color sdk_min(sdk_color value1, sdk_color )
+sdk_color sdk_min(sdk_color value1, sdk_color value2)
 ```
 
 
