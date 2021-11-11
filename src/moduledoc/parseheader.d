@@ -133,6 +133,7 @@ if (isInputRange!R)
     auto fDecAndCommentBlocks = functionsBlock.splitter!(Yes.keepSeparators)(COMMENT_BLOCK_REGEX);
     string functionDocText = "";
     foreach (fDecAndCommentBlock; fDecAndCommentBlocks) {
+      string lastFunctionName;
       fDecAndCommentBlock = fDecAndCommentBlock.stripLeftEOL.stripLeftSpaces;
       if (fDecAndCommentBlock.length == 0) {
         continue;
@@ -150,8 +151,15 @@ if (isInputRange!R)
           }
           auto functionInfo = processFunctionToken(fToken);
           if (!(functionInfo is null)) {
+
+            // Evitamos arrastrar el mismo bloque de comentarios a otras funciones con nombre distinto
+            if (lastFunctionName.length > 0 && lastFunctionName != functionInfo.functionName &&
+                functionDocText == moduleInfo.functions[lastFunctionName][0].docText) {
+              functionDocText = "";
+            }
             functionInfo.docText = functionDocText;
-            moduleInfo.functions[functionInfo.functionName] ~= functionInfo;
+            lastFunctionName = functionInfo.functionName;
+            moduleInfo.functions[lastFunctionName] ~= functionInfo;
           }
         }
       }
