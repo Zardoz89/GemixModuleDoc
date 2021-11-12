@@ -26,12 +26,24 @@ GMXDEFINE_LIBRARY_EXPORTS(GMXEXT_mod_sdkexample,
 	);
 
 	/* TYPES */
-	GMXDEFINE_TYPES("type sdk_color "
-	                  "float r;"
-	                  "float g;"
-	                  "float b;"
-	                  "float a;"
-	                "end "
+	GMXDEFINE_TYPES(
+	  "type MyType "
+      "int8 r;"
+      "int8 g;"
+      "int8 b;"
+      "int16 a;"
+    "end "
+	  "type OtherType "
+      "int8* ptr;"
+      "int size;"
+    "end "
+    /** A type... */
+	  "type sdk_color "
+      "float r;"
+      "float g;"
+      "float b;"
+      "float a;"
+    "end "
 	);
 
 	/* GLOBALS */

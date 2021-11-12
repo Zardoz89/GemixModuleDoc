@@ -1,5 +1,5 @@
-SDK Example
------------
+noname
+------
 
 Category: Generic
 
@@ -15,6 +15,37 @@ System: Common
  * `INT sdk_colorchannel_max = 255`
  * `FLOAT sdk_colorchannel_min_normalized = 0.0f`
  * `FLOAT sdk_colorchannel_max_normalized = 1.0f`
+
+
+## Types
+
+### MyType
+
+Members:
+
+ * `INT8 r`
+ * `INT8 g`
+ * `INT8 b`
+ * `INT16 a`
+`
+### OtherType
+
+Members:
+
+ * `INT8* ptr`
+ * `INT size`
+`
+### sdk_color
+
+Members:
+
+ * `FLOAT r`
+ * `FLOAT g`
+ * `FLOAT b`
+ * `FLOAT a`
+`
+ A type... 
+
 
 
 ## Functions

@@ -68,6 +68,14 @@ class MarkdownGenerator {
       sink.put("\n\n");
     }
 
+    if (moduleInfo.typedefInfos.length > 0) {
+      sink.put("## Types");
+      sink.put("\n\n");
+
+      this.generateTypes(sink , moduleInfo.typedefInfos);
+      sink.put("\n\n");
+    }
+
     if (moduleInfo.functions.length > 0) {
       import std.array : array;
       import std.algorithm.sorting : sort;
@@ -109,6 +117,47 @@ class MarkdownGenerator {
       sink.put("\t");
       sink.put(constInfo.docText);
       sink.put("\n\t\n");
+    }
+  }
+
+  private void generateTypes(R)(R sink, TypedefInfo[] typedefInfos)
+  if (isOutputRange!(R, char)) {
+    if (typedefInfos.empty) {
+      return;
+    }
+
+    foreach(typedefInfo; typedefInfos) {
+      this.generateType(sink, typedefInfo);
+    }
+  }
+
+  private void generateType(R)(R sink, TypedefInfo typedefInfo)
+  if (isOutputRange!(R, char)) {
+    sink.put("### ");
+    sink.put(typedefInfo.name);
+    sink.put("\n\n");
+    sink.put("Members:\n\n");
+
+    foreach(member; typedefInfo.members) {
+      sink.put(" * `");
+      sink.put(member.type.toString());
+      sink.put(" ");
+      sink.put(member.name);
+      if (member.defaultValue.length > 0) {
+        sink.put(" = ");
+        sink.put(member.defaultValue);
+      }
+      sink.put("`\n");
+      if (member.docText.length > 0) {
+        sink.put("\t\n\t");
+        sink.put(member.docText);
+        sink.put("\n\t\n");
+      }
+    }
+    sink.put("`\n");
+    if (typedefInfo.docText.length > 0) {
+      sink.put(typedefInfo.docText);
+      sink.put("\n\n");
     }
   }
 

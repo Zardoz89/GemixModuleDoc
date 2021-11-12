@@ -6,6 +6,7 @@ module moduledoc.data;
 
 import std.conv : to;
 import std.range;
+import std.typecons : Tuple;
 
 import moduledoc.strutil;
 import moduledoc.regexutil;
@@ -33,6 +34,7 @@ enum System {
 /// Tipos primitivos de Gemix
 enum BasicType {
   Unknow = "?",
+  Void   = "VOID",
   Byte   = "BYTE",
   Word   = "WORD",
   DWord  = "DWORD",
@@ -72,7 +74,7 @@ struct Type {
     return typeName ~ "*".repeat(this.indirectionLevel).joiner().to!string;
   }
 
-  public static Type getFromText(R)(R text)
+  public static Type getFromFunctionSignature(R)(R text)
   if (isInputRange!R)
   {
     import std.algorithm.searching : canFind, count;
@@ -118,6 +120,51 @@ struct Type {
     type.indirectionLevel = text.count('P');
     return type;
   }
+
+  public static Type getFromString(string text)
+  {
+    import std.algorithm.searching : count;
+    import std.regex : ctRegex, match;
+
+    Type type;
+    if (text.match(ctRegex!(`uint64`, "i"))) {
+      type.type = BasicType.UInt64;
+    } else if (text.match(ctRegex!(`uint32`, "i"))) {
+      type.type = BasicType.UInt32;
+    } else if (text.match(ctRegex!(`uint16`, "i"))) {
+      type.type = BasicType.UInt16;
+    } else if (text.match(ctRegex!(`uint8`, "i"))) {
+      type.type = BasicType.UInt8;
+    } else if (text.match(ctRegex!(`int64`, "i"))) {
+      type.type = BasicType.Int64;
+    } else if (text.match(ctRegex!(`int32`, "i"))) {
+      type.type = BasicType.Int32;
+    } else if (text.match(ctRegex!(`int16`, "i"))) {
+      type.type = BasicType.Int16;
+    } else if (text.match(ctRegex!(`int8`, "i"))) {
+      type.type = BasicType.Int8;
+    } else if (text.match(ctRegex!(`uint`, "i"))) {
+      type.type = BasicType.UInt;
+    } else if (text.match(ctRegex!(`int`, "i"))) {
+      type.type = BasicType.Int;
+    } else if (text.match(ctRegex!(`float`, "i"))) {
+      type.type = BasicType.Float;
+    } else if (text.match(ctRegex!(`double`, "i"))) {
+      type.type = BasicType.Double;
+    } else if (text.match(ctRegex!(`string`, "i"))) {
+      type.type = BasicType.String;
+    } else {
+      type.type = BasicType.Type;
+
+      import std.regex : matchFirst, ctRegex;
+      auto matchTypeName = text.matchFirst(ctRegex!(`[a-z][a-z0-9_-]+`, "i"));
+      if (!matchTypeName.empty) {
+        type.typeName = matchTypeName[1];
+      }
+    }
+    type.indirectionLevel = text.count('*');
+    return type;
+  }
 }
 
 /**
@@ -138,6 +185,9 @@ struct GemixModuleInfo {
 
   /// Contantes definidas en el modulo
   ConstInfo[] constInfos;
+
+  /// Tipos defininos en el modulo
+  TypedefInfo[] typedefInfos;
 
   /// Información de las funciones definidas en el módulo
   FunctionInfo[][string] functions;
@@ -184,6 +234,7 @@ struct GemixModuleInfo {
   }
 }
 
+/// Representa una constante
 struct ConstInfo {
   /// Nombre de la constante
   string name;
@@ -195,6 +246,18 @@ struct ConstInfo {
   string value;
 
   /// Documentación de la constante
+  string docText;
+}
+
+/// Representa una definición de un tipo
+struct TypedefInfo {
+  /// Nombre del tipo
+  string name;
+
+  /// Miembros del tipo
+  TypeMember[] members;
+
+  /// Documentación de la definición del tipo
   string docText;
 }
 
@@ -277,19 +340,19 @@ class FunctionInfo {
 
 
 
-/// Información de un parámetro de una función
+/// Información de un parámetro de una función o miembro de un tipo
 struct ParamInfo {
 
-  /// Nombre del parámetro
+  /// Nombre del parámetro o miembro
   string name;
 
-  /// Tipado del parámetro
+  /// Tipado del parámetro o miembro
   Type type;
 
   /// Valor por defecto
   string defaultValue;
 
-  /// Documentación del parámetro
+  /// Documentación del parámetro o miembro
   string docText;
 
   public string toString() {
@@ -305,4 +368,7 @@ struct ParamInfo {
     return "p{" ~ ret ~ "}";
   }
 }
+
+/// Ditto
+alias TypeMember = ParamInfo;
 

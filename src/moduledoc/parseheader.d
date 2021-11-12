@@ -115,6 +115,7 @@ if (isInputRange!R)
   if (text.findSkip("GMXDEFINE_LIBRARY_EXPORTS")) {
     text = text
       .processConstsBlock(moduleInfo)
+      .processTypesBlock(moduleInfo)
       .processFunctionsBlock(moduleInfo);
   }
   return text;
@@ -175,6 +176,81 @@ private void processConstBlock(string constBlock, ref GemixModuleInfo moduleInfo
         }
       }
     }
+  }
+}
+
+/// Procesa las declaraciones de tipos del modulo
+private R processTypesBlock(R)(R text, ref GemixModuleInfo moduleInfo)
+if (isInputRange!R)
+{
+  import std.algorithm.searching : canFind;
+  import std.range : chunks, stride;
+  import std.regex : ctRegex, splitter;
+  import std.typecons : Yes;
+
+  if (text.findSkip("GMXDEFINE_TYPES(")) {
+    text = text.stripLeftEOL.stripLeftSpaces;
+
+    // Obtenemos todo el bloque dentro de GMXDEFINE_TYPES
+    string typesBlock = text.findSplitBefore(");")[0].to!string;
+
+    // Dividimos el bloque en otros que contengan bloques de comentarios y declaraciones de tipos
+    auto typeDecAndCommentBlocks = typesBlock.splitter!(Yes.keepSeparators)(COMMENT_BLOCK_REGEX);
+    string typeDocText = "";
+    foreach (typeDecAndCommentBlock; typeDecAndCommentBlocks) {
+      typeDecAndCommentBlock = typeDecAndCommentBlock.stripLeftEOL.stripLeftSpaces;
+      if (typeDecAndCommentBlock.length == 0) {
+        continue;
+      }
+
+      // Obtenemos el texto del bloque de comentarios que enbace estas declaraciones de funciones
+      if (typeDecAndCommentBlock.canFind("/**")) {
+        typeDocText = processCommentBlock(typeDecAndCommentBlock);
+      } else {
+        foreach (typeDecBlock; typeDecAndCommentBlock.splitter(ctRegex!(`end`, "i"))) {
+          processTypeBlock(typeDecBlock, typeDocText , moduleInfo);
+        }
+      }
+    }
+
+    text = text.drop(typesBlock.length);
+  }
+  return text;
+}
+
+/// Procesa una declaración de tipo
+private void processTypeBlock (string text, string typeDocText, ref GemixModuleInfo moduleInfo)
+{
+  import std.algorithm.searching : findSkip;
+  import std.range : drop;
+  import std.regex : ctRegex, matchFirst, replaceAll, splitter;
+
+  text = text
+    .replaceAll(ctRegex!(`\n|\r|"`, "m"), "")
+    .replaceAll(ctRegex!(`\t+`), " ")
+    .replaceAll(ctRegex!(`\s+`), " ")
+    .stripSpaces ;
+
+  TypedefInfo typeInfo;
+  auto typeNameMatch = text.matchFirst(ctRegex!(`type\s+([a-z][a-z0-9_-]*)`, "i"));
+  if (typeNameMatch.length > 0) {
+    typeInfo.name = typeNameMatch[1];
+
+    text = text.drop(typeNameMatch[0].length);
+
+    auto members = text.splitter(ctRegex!(`;`));
+    foreach (member; members) {
+      member = member.stripSpaces;
+      if (member.length == 0) {
+        continue;
+      }
+      Type type = Type.getFromString(member);
+      member.findSkip(" ");
+      TypeMember typeMember = {name:member.stripSpaces, type: type};
+      typeInfo.members ~= typeMember;
+    }
+    typeInfo.docText = typeDocText;
+    moduleInfo.typedefInfos ~= typeInfo;
   }
 }
 
@@ -272,7 +348,7 @@ if (isInputRange!R)
   }
 
   fToken.popFront();
-  funcionInfo.returnType = Type.getFromText(fToken.front);
+  funcionInfo.returnType = Type.getFromFunctionSignature(fToken.front);
   return funcionInfo;
 }
 
@@ -280,7 +356,7 @@ private ParamInfo processSignatureParam(R)(R param)
 if (isInputRange!R)
 {
   ParamInfo paramInfo;
-  paramInfo.type = Type.getFromText(param);
+  paramInfo.type = Type.getFromFunctionSignature(param);
   if (param.findSkip("=")) {
     paramInfo.defaultValue = param;
   }

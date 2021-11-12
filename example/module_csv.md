@@ -1,5 +1,5 @@
-Modulo CSV
-----------
+noname
+------
 
 Category: Generic
 
@@ -12,6 +12,19 @@ System: Common
  * `INT sdk_colorchannel_max = 255`
  * `FLOAT sdk_colorchannel_min_normalized = 0.0f`
  * `FLOAT sdk_colorchannel_max_normalized = 1.0f`
+
+
+## Types
+
+### sdk_color
+
+Members:
+
+ * `FLOAT r`
+ * `FLOAT g`
+ * `FLOAT b`
+ * `FLOAT a`
+`
 
 
 ## Functions
