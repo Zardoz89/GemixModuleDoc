@@ -123,7 +123,7 @@ struct Type {
 /**
  * Contenedor de la información parseada de un modulo Gemix
  */
-class GemixModuleInfo {
+struct GemixModuleInfo {
   /// Nombre del modulo
   string name;
 
@@ -167,7 +167,6 @@ class GemixModuleInfo {
     }
   }
 
-  override
   public string toString() {
     string ret =
       "Name: " ~ this.name ~  ", "
@@ -276,8 +275,10 @@ class FunctionInfo {
   }
 }
 
+
+
 /// Información de un parámetro de una función
-class ParamInfo {
+struct ParamInfo {
 
   /// Nombre del parámetro
   string name;
@@ -291,7 +292,6 @@ class ParamInfo {
   /// Documentación del parámetro
   string docText;
 
-  override
   public string toString() {
     string ret =
       "Name: " ~ this.name ~  ", "

@@ -21,7 +21,7 @@ GemixModuleInfo processFile(string fileName) {
   import std.file : readText;
   import std.utf : byUTF;
 
-  GemixModuleInfo moduleInfo = new GemixModuleInfo();
+  GemixModuleInfo moduleInfo;
   auto fileData = readText(fileName).byUTF!char()
     .processHeaderCommentBlock(moduleInfo)
     .processLibraryProperties(moduleInfo)
@@ -31,7 +31,7 @@ GemixModuleInfo processFile(string fileName) {
 }
 
 /// Procesa el comentario cabecera del modulo
-private R processHeaderCommentBlock(R)(R text, GemixModuleInfo moduleInfo)
+private R processHeaderCommentBlock(R)(R text, ref GemixModuleInfo moduleInfo)
 if (isInputRange!R)
 {
   import std.regex : matchFirst;
@@ -45,7 +45,7 @@ if (isInputRange!R)
 }
 
 /// Procesa las propiedades del modulo
-private R processLibraryProperties(R)(R text, GemixModuleInfo moduleInfo)
+private R processLibraryProperties(R)(R text, ref GemixModuleInfo moduleInfo)
 if (isInputRange!R)
 {
   if (text.findSkip("GMXDEFINE_LIBRARY_PROPERTIES")) {
@@ -109,7 +109,7 @@ if (isInputRange!R)
 }
 
 /// Procesa las declaraciones publicas del modulo
-private R processLibraryExportsBlock(R)(R text, GemixModuleInfo moduleInfo)
+private R processLibraryExportsBlock(R)(R text, ref GemixModuleInfo moduleInfo)
 if (isInputRange!R)
 {
   if (text.findSkip("GMXDEFINE_LIBRARY_EXPORTS")) {
@@ -121,7 +121,7 @@ if (isInputRange!R)
 }
 
 /// Procesa los bloques de declaraciones de constantes del modulo
-private R processConstsBlock(R)(R text, GemixModuleInfo moduleInfo)
+private R processConstsBlock(R)(R text, ref GemixModuleInfo moduleInfo)
 if (isInputRange!R)
 {
   while (text.findSkip("GMXDEFINE_CONSTS_")) {
@@ -136,7 +136,7 @@ if (isInputRange!R)
 }
 
 /// Procesa un bloque de declaraciones de constantes del modulo
-private void processConstBlock(string constBlock, GemixModuleInfo moduleInfo)
+private void processConstBlock(string constBlock, ref GemixModuleInfo moduleInfo)
 {
   import std.algorithm.searching : canFind;
   import std.range : chunks, drop;
@@ -179,7 +179,7 @@ private void processConstBlock(string constBlock, GemixModuleInfo moduleInfo)
 }
 
 /// Procesa las declaraciones de funciones del modulo
-private R processFunctionsBlock(R)(R text, GemixModuleInfo moduleInfo)
+private R processFunctionsBlock(R)(R text, ref GemixModuleInfo moduleInfo)
 if (isInputRange!R)
 {
   import std.algorithm.searching : canFind;
@@ -279,7 +279,7 @@ if (isInputRange!R)
 private ParamInfo processSignatureParam(R)(R param)
 if (isInputRange!R)
 {
-  ParamInfo paramInfo = new ParamInfo();
+  ParamInfo paramInfo;
   paramInfo.type = Type.getFromText(param);
   if (param.findSkip("=")) {
     paramInfo.defaultValue = param;
