@@ -6,7 +6,6 @@ module moduledoc.data;
 
 import std.conv : to;
 import std.range;
-import std.typecons : Tuple;
 
 import moduledoc.strutil;
 import moduledoc.regexutil;
