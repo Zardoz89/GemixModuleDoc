@@ -33,7 +33,7 @@ class MarkdownGenerator {
 
   }
 
-  private void generate(R)(R sink, GemixModuleInfo moduleInfo)
+  private void generate(R)(R sink, ref GemixModuleInfo moduleInfo)
   if (isOutputRange!(R, char)) {
     if (moduleInfo.name.length > 0) {
       sink.put(moduleInfo.name);

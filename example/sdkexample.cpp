@@ -1,7 +1,7 @@
-/* Gemix Studio - Copyright (c) 2005-2013 Skygem Software. All rights reserved. */
 /**
  * @name SDK Example
- **/
+ * Gemix Studio - Copyright (c) 2005-2013 Skygem Software. All rights reserved.
+ */
 #include "sdkexample.h"
 
 GMXDEFINE_LIBRARY_PROPERTIES(GMXEXT_mod_csv,

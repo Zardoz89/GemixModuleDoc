@@ -34,11 +34,12 @@ GemixModuleInfo processFile(string fileName) {
 private R processHeaderCommentBlock(R)(R text, ref GemixModuleInfo moduleInfo)
 if (isInputRange!R)
 {
-  import std.regex : matchFirst;
+  import std.regex : ctRegex, matchFirst, replaceAll;
   import std.range : dropBack;
 
   if(text.findSkip("/**")) {
     moduleInfo.docText = text.to!string.matchFirst(EXTRACT_COMMENT_BLOCK_REGEX).hit.dropBack(2);
+    moduleInfo.docText = moduleInfo.docText.replaceAll(ctRegex!"\r", "").replaceAll(ctRegex!(`^( |\t)*\*( |\t)*`, "m"), "");
   }
   text.findSkip("*/");
   return text;

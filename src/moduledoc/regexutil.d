@@ -21,10 +21,10 @@ package enum SPLIT_COMMA_SPACE_SEPARATOR_REGEX =ctRegex!(`,\s+`, "s");
 package enum SPLIT_COMMA_SEPARATOR_REGEX = ctRegex!(`,`, "s");
 
 /// Regex que devuelve un identificador valido
-package enum IDENTIFIER_REGEX = ctRegex!(`[a-zA-Z_][a-zA-Z0-9_-]+`);
+package enum IDENTIFIER_REGEX = ctRegex!(`[a-z_][a-z0-9_-]+`, "i");
 
 /// Regex para encontrar una entrada de documentación estilo JavaDoc/JsDoc/DOxygen
-package enum DOC_ENTRYPOINT_REGEX = ctRegex!(`@\w+\s*(.*)\n`, "s");
+package enum DOC_ENTRYPOINT_REGEX = ctRegex!(`@\w+( |\t)*(.*)\n`, "s");
 
 /// Regex para encontrar una entrada @param XXXX ...
 package enum PARAM_REGEX = ctRegex!(`@param\s+([a-zA-Z][a-zA-Z0-9_-]*)(?:\s+(.*)){0,1}?`);

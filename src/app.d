@@ -41,7 +41,7 @@ int main(string[] args) {
     moduleInfos ~= processFile(inputFile);
   }
 
-  foreach(moduleInfo; moduleInfos) {
+  foreach(ref moduleInfo; moduleInfos) {
     moduleInfo.parseDocText();
   }
 

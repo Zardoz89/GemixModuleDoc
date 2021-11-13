@@ -1,10 +1,14 @@
-noname
-------
+SDK Example
+-----------
 
 Category: Generic
 
 System: Common
 
+
+
+Gemix Studio - Copyright (c) 2005-2013 Skygem Software. All rights reserved.
+ 
 
 ## Consts
 
