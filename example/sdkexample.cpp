@@ -44,6 +44,11 @@ GMXDEFINE_LIBRARY_EXPORTS(GMXEXT_mod_sdkexample,
       "float b;"
       "float a;"
     "end "
+    "type ComplexType "
+      "sdk_color color;"
+      "int32 vec[3];"
+      "bool enabled;"
+    "end "
 	);
 
 	/* GLOBALS */
@@ -69,9 +74,11 @@ GMXDEFINE_LIBRARY_EXPORTS(GMXEXT_mod_sdkexample,
   /**
    * Swaps two values
    */
-      "sdk_swap(TP(vec2),TP(vec2))"          , "I"           , 0, GMXEXT_sdkexample_sdk_swap_vec2,
-      "sdk_swap(TP(vec3),TP(vec3))"          , "I"           , 0, GMXEXT_sdkexample_sdk_swap_vec3,
-      "sdk_swap(TP(vec4),TP(vec4))"          , "I"           , 0, GMXEXT_sdkexample_sdk_swap_vec4
+      "sdk_swap(TP(vec2),TP(vec2))"          , "V"           , 0, GMXEXT_sdkexample_sdk_swap_vec2,
+      "sdk_swap(TP(vec3),TP(vec3))"          , "V"           , 0, GMXEXT_sdkexample_sdk_swap_vec3,
+      "sdk_swap(TP(vec4),TP(vec4))"          , "V"           , 0, GMXEXT_sdkexample_sdk_swap_vec4,
+      "sdk_misc_fun(VP)"                     , "V"           , 1, GMXEXT_sdkexample_sdk_misc_fun,
+      "sdk_misc_fun(STP(an_struct))"         , "V"           , 1, GMXEXT_sdkexample_sdk_misc_fun_st,
 	);
 
 	/* ENTRYPOINTS */

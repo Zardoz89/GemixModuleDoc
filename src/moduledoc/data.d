@@ -49,7 +49,10 @@ enum BasicType {
   UInt64 = "UINT64",
   Float  = "FLOAT",
   Double = "DOUBLE",
+  Bool   = "BOOL",
   String = "STRING",
+  Struct = "Struct",
+  FObject= "FObject",
   Type   = "TypeDef"
 }
 
@@ -101,17 +104,25 @@ struct Type {
       type.type = BasicType.UInt;
     } else if (text.canFind("I")) {
       type.type = BasicType.Int;
+    } else if (text.canFind("FO")) {
+      type.type = BasicType.FObject;
     } else if (text.canFind("F")) {
       type.type = BasicType.Float;
     } else if (text.canFind("D")) {
       type.type = BasicType.Double;
+    } else if (text.canFind("ST")) {
+      type.type = BasicType.Struct;
     } else if (text.canFind("S")) {
       type.type = BasicType.String;
+    } else if (text.canFind("V")) {
+      type.type = BasicType.Void;
+    } else if (text.canFind("B")) {
+      type.type = BasicType.Bool;
     } else if (text.canFind("T")) {
       type.type = BasicType.Type;
 
       import std.regex : matchFirst, ctRegex;
-      auto matchTypeName = text.matchFirst(ctRegex!(`\(([a-zA-Z0-9_-]+)\)`));
+      auto matchTypeName = text.matchFirst(ctRegex!(`\(([a-z0-9_-]+)\)`, "i"));
       if (!matchTypeName.empty) {
         type.typeName = matchTypeName[1];
       }
@@ -126,7 +137,9 @@ struct Type {
     import std.regex : ctRegex, match;
 
     Type type;
-    if (text.match(ctRegex!(`uint64`, "i"))) {
+    if (text.match(ctRegex!(`void`, "i"))) {
+      type.type = BasicType.Void;
+    } else if (text.match(ctRegex!(`uint64`, "i"))) {
       type.type = BasicType.UInt64;
     } else if (text.match(ctRegex!(`uint32`, "i"))) {
       type.type = BasicType.UInt32;
@@ -152,13 +165,19 @@ struct Type {
       type.type = BasicType.Double;
     } else if (text.match(ctRegex!(`string`, "i"))) {
       type.type = BasicType.String;
+    } else if (text.match(ctRegex!(`bool`, "i"))) {
+      type.type = BasicType.Bool;
+    } else if (text.match(ctRegex!(`fobject`, "i"))) {
+      type.type = BasicType.FObject;
     } else {
       type.type = BasicType.Type;
 
       import std.regex : matchFirst, ctRegex;
       auto matchTypeName = text.matchFirst(ctRegex!(`[a-z][a-z0-9_-]+`, "i"));
+      import std.stdio;
+      writeln(matchTypeName);
       if (!matchTypeName.empty) {
-        type.typeName = matchTypeName[1];
+        type.typeName = matchTypeName[0];
       }
     }
     type.indirectionLevel = text.count('*');

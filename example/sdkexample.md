@@ -50,6 +50,16 @@ Members:
 `
  A type... 
 
+### ComplexType
+
+Members:
+
+ * `sdk_color color`
+ * `INT32 vec[3]`
+ * `BOOL enabled`
+`
+ A type... 
+
 
 
 ## Functions
@@ -117,7 +127,7 @@ INT
 
 
 
-### `INT sdk_swap(vec2* , vec2* )`
+### `VOID sdk_swap(vec2* , vec2* )`
 
 
 Swaps two values
@@ -132,15 +142,34 @@ Swaps two values
 
 #### Return
 
-INT
+VOID
 
 #### Overloads
 
 ```gemix
-INT sdk_swap(vec3* , vec3* )
+VOID sdk_swap(vec3* , vec3* )
 ```
 ```gemix
-INT sdk_swap(vec4* , vec4* )
+VOID sdk_swap(vec4* , vec4* )
+```
+
+
+### `VOID sdk_misc_fun(VOID* )`
+
+#### Parameters
+
+| Name              | Type        |                                      |
+|-------------------|-------------|--------------------------------------|
+| 	| VOID*	| 	|
+
+#### Return
+
+VOID
+
+#### Overloads
+
+```gemix
+VOID sdk_misc_fun(Struct* )
 ```
 
 
