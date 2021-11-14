@@ -154,7 +154,7 @@ class MarkdownGenerator {
         sink.put("\n\t\n");
       }
     }
-    sink.put("`\n");
+    sink.put("\n");
     if (typedefInfo.docText.length > 0) {
       sink.put(typedefInfo.docText);
       sink.put("\n\n");

@@ -31,14 +31,14 @@ Members:
  * `INT8 g`
  * `INT8 b`
  * `INT16 a`
-`
+
 ### OtherType
 
 Members:
 
  * `INT8* ptr`
  * `INT size`
-`
+
 ### sdk_color
 
 Members:
@@ -47,7 +47,7 @@ Members:
  * `FLOAT g`
  * `FLOAT b`
  * `FLOAT a`
-`
+
  A type... 
 
 ### ComplexType
@@ -57,7 +57,7 @@ Members:
  * `sdk_color color`
  * `INT32 vec[3]`
  * `BOOL enabled`
-`
+
 
 
 ## Functions
