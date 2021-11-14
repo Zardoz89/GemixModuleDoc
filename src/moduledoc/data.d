@@ -200,7 +200,7 @@ struct GemixModuleInfo {
   System system = System.Null;
 
   /// Contantes definidas en el modulo
-  ConstInfo[] constInfos;
+  VarInfo[] constInfos;
 
   /// Tipos defininos en el modulo
   TypedefInfo[] typedefInfos;
@@ -250,18 +250,18 @@ struct GemixModuleInfo {
   }
 }
 
-/// Representa una constante
-struct ConstInfo {
-  /// Nombre de la constante
+/// Representa una constante, variable global o local
+struct VarInfo {
+  /// Nombre
   string name;
 
-  /// Tipado de la constante
+  /// Tipado
   string type;
 
-  /// Valor de la constante
+  /// Valor
   string value;
 
-  /// Documentación de la constante
+  /// Documentación
   string docText;
 }
 

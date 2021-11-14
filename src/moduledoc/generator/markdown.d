@@ -64,7 +64,7 @@ class MarkdownGenerator {
       sink.put("## Consts");
       sink.put("\n\n");
 
-      this.generateConsts(sink , moduleInfo.constInfos);
+      this.generateVarsList(sink , moduleInfo.constInfos);
       sink.put("\n\n");
     }
 
@@ -84,7 +84,6 @@ class MarkdownGenerator {
       sink.put("\n\n");
 
       auto sortedFunctionNames = moduleInfo.sortedFunctionNames;
-      //moduleInfo.functions.byKey().array.sort!("a < b");
       foreach(functionName; sortedFunctionNames) {
         this.generateFunctions(sink, moduleInfo.functions[functionName]);
         sink.put("\n\n");
@@ -92,30 +91,26 @@ class MarkdownGenerator {
     }
   }
 
-  private void generateConsts(R)(R sink, ConstInfo[] constInfos)
+  private void generateVarsList(R)(R sink, VarInfo[] varInfos)
   if (isOutputRange!(R, char)) {
-    if (constInfos.empty) {
-      return;
-    }
-
-    foreach(constInfo; constInfos) {
-      this.generateConst(sink, constInfo);
+    foreach(varInfo; varInfos) {
+      this.generateVar(sink, varInfo);
     }
   }
 
-  private void generateConst(R)(R sink, ConstInfo constInfo)
+  private void generateVar(R)(R sink, VarInfo varInfo)
   if (isOutputRange!(R, char)) {
     sink.put(" * `");
-    sink.put(constInfo.type);
+    sink.put(varInfo.type);
     sink.put(" ");
-    sink.put(constInfo.name);
+    sink.put(varInfo.name);
     sink.put(" = ");
-    sink.put(constInfo.value);
+    sink.put(varInfo.value);
     sink.put("`\n");
-    if (constInfo.docText.length > 0) {
+    if (varInfo.docText.length > 0) {
       sink.put("\t\n");
       sink.put("\t");
-      sink.put(constInfo.docText);
+      sink.put(varInfo.docText);
       sink.put("\n\t\n");
     }
   }

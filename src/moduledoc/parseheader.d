@@ -167,7 +167,7 @@ private void processConstBlock(string constBlock, ref GemixModuleInfo moduleInfo
         // Rango de pares "XXXX" valor
         auto constPairs = constDecAndCommentBlock.splitter(SPLIT_COMMA_SPACE_SEPARATOR_REGEX).chunks(2);
         foreach(constPair ; constPairs) {
-          ConstInfo constInfo = {name: constPair.front.stripSpaces.stripRightEOL.strip("\""), type: type};
+          VarInfo constInfo = {name: constPair.front.stripSpaces.stripRightEOL.strip("\""), type: type};
           constPair.popFront;
           constInfo.value = constPair.front.stripSpaces.stripRightEOL;
           constInfo.docText = constDocText.stripSpaces;
