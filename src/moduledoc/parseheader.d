@@ -21,7 +21,7 @@ GemixModuleInfo processFile(string fileName) {
   import std.file : readText;
   import std.utf : byUTF;
 
-  GemixModuleInfo moduleInfo = new GemixModuleInfo();
+  GemixModuleInfo moduleInfo;
   auto fileData = readText(fileName).byUTF!char()
     .processHeaderCommentBlock(moduleInfo)
     .processLibraryProperties(moduleInfo)
@@ -31,21 +31,22 @@ GemixModuleInfo processFile(string fileName) {
 }
 
 /// Procesa el comentario cabecera del modulo
-private R processHeaderCommentBlock(R)(R text, GemixModuleInfo moduleInfo)
+private R processHeaderCommentBlock(R)(R text, ref GemixModuleInfo moduleInfo)
 if (isInputRange!R)
 {
-  import std.regex : matchFirst;
+  import std.regex : ctRegex, matchFirst, replaceAll;
   import std.range : dropBack;
 
   if(text.findSkip("/**")) {
     moduleInfo.docText = text.to!string.matchFirst(EXTRACT_COMMENT_BLOCK_REGEX).hit.dropBack(2);
+    moduleInfo.docText = moduleInfo.docText.replaceAll(ctRegex!"\r", "").replaceAll(ctRegex!(`^( |\t)*\*( |\t)*`, "m"), "");
   }
   text.findSkip("*/");
   return text;
 }
 
 /// Procesa las propiedades del modulo
-private R processLibraryProperties(R)(R text, GemixModuleInfo moduleInfo)
+private R processLibraryProperties(R)(R text, ref GemixModuleInfo moduleInfo)
 if (isInputRange!R)
 {
   if (text.findSkip("GMXDEFINE_LIBRARY_PROPERTIES")) {
@@ -109,19 +110,22 @@ if (isInputRange!R)
 }
 
 /// Procesa las declaraciones publicas del modulo
-private R processLibraryExportsBlock(R)(R text, GemixModuleInfo moduleInfo)
+private R processLibraryExportsBlock(R)(R text, ref GemixModuleInfo moduleInfo)
 if (isInputRange!R)
 {
   if (text.findSkip("GMXDEFINE_LIBRARY_EXPORTS")) {
     text = text
       .processConstsBlock(moduleInfo)
+      .processGlobalsBlock(moduleInfo)
+      .processLocalsBlock(moduleInfo)
+      .processTypesBlock(moduleInfo)
       .processFunctionsBlock(moduleInfo);
   }
   return text;
 }
 
 /// Procesa los bloques de declaraciones de constantes del modulo
-private R processConstsBlock(R)(R text, GemixModuleInfo moduleInfo)
+private R processConstsBlock(R)(R text, ref GemixModuleInfo moduleInfo)
 if (isInputRange!R)
 {
   while (text.findSkip("GMXDEFINE_CONSTS_")) {
@@ -136,7 +140,7 @@ if (isInputRange!R)
 }
 
 /// Procesa un bloque de declaraciones de constantes del modulo
-private void processConstBlock(string constBlock, GemixModuleInfo moduleInfo)
+private void processConstBlock(string constBlock, ref GemixModuleInfo moduleInfo)
 {
   import std.algorithm.searching : canFind;
   import std.range : chunks, drop;
@@ -165,7 +169,7 @@ private void processConstBlock(string constBlock, GemixModuleInfo moduleInfo)
         // Rango de pares "XXXX" valor
         auto constPairs = constDecAndCommentBlock.splitter(SPLIT_COMMA_SPACE_SEPARATOR_REGEX).chunks(2);
         foreach(constPair ; constPairs) {
-          ConstInfo constInfo = {name: constPair.front.stripSpaces.stripRightEOL.strip("\""), type: type};
+          VarInfo constInfo = {name: constPair.front.stripSpaces.stripRightEOL.strip("\""), type: type};
           constPair.popFront;
           constInfo.value = constPair.front.stripSpaces.stripRightEOL;
           constInfo.docText = constDocText.stripSpaces;
@@ -178,8 +182,162 @@ private void processConstBlock(string constBlock, GemixModuleInfo moduleInfo)
   }
 }
 
+/// Procesa las declaraciones de variables globales del modulos
+private R processGlobalsBlock(R)(R text, ref GemixModuleInfo moduleInfo)
+if (isInputRange!R)
+{
+  if (text.findSkip("GMXDEFINE_GLOBALS(")) {
+    text = text.stripLeftEOL.stripLeftSpaces;
+    // Obtenemos todo el bloque dentro de GMXDEFINE_GLOBALS
+    string globalsBlock = text.findSplitBefore(");")[0].to!string;
+    processVarsBlock!(VarType.GLOBAL)(globalsBlock, moduleInfo);
+    text = text.drop(globalsBlock.length);
+  }
+  return text;
+}
+
+/// Procesa las declaraciones de variables locales del modulos
+private R processLocalsBlock(R)(R text, ref GemixModuleInfo moduleInfo)
+if (isInputRange!R)
+{
+  if (text.findSkip("GMXDEFINE_LOCALS(")) {
+    text = text.stripLeftEOL.stripLeftSpaces;
+    // Obtenemos todo el bloque dentro de GMXDEFINE_LOCALS
+    string localsBlock = text.findSplitBefore(");")[0].to!string;
+    processVarsBlock!(VarType.LOCAL)(localsBlock, moduleInfo);
+    text = text.drop(localsBlock.length);
+  }
+  return text;
+}
+
+private enum VarType {
+  LOCAL,
+  GLOBAL
+}
+
+private void processVarsBlock(VarType varType)(string block, ref GemixModuleInfo moduleInfo) {
+  import std.algorithm.searching : canFind;
+  import std.range : chunks, stride;
+  import std.regex : ctRegex, splitter;
+  import std.typecons : Yes;
+
+  // Dividimos el bloque en otros que contengan bloques de comentarios y declaraciones de variables
+  auto varDecAndCommentBlocks = block.splitter!(Yes.keepSeparators)(COMMENT_BLOCK_REGEX);
+  string blockDocText = "";
+  foreach (varDecAndCommentBlock; varDecAndCommentBlocks) {
+    varDecAndCommentBlock = varDecAndCommentBlock.stripLeftEOL.stripLeftSpaces;
+    if (varDecAndCommentBlock.length == 0) {
+      continue;
+    }
+
+    // Obtenemos el texto del bloque de comentarios que enbace estas declaraciones de funciones
+    if (varDecAndCommentBlock.canFind("/**")) {
+      blockDocText = processCommentBlock(varDecAndCommentBlock);
+    } else {
+      foreach (varDecBlock; varDecAndCommentBlock.splitter(ctRegex!(`;`))) {
+        processVarBlock!(varType)(varDecBlock, moduleInfo, blockDocText);
+        blockDocText = "";
+      }
+    }
+  }
+}
+
+private void processVarBlock(VarType varType)(string varDecBlock, ref GemixModuleInfo moduleInfo, string blockDocText) {
+  import std.regex : ctRegex, matchFirst;
+
+  auto varMatchedRegex = varDecBlock.matchFirst(ctRegex!(`([a-z][a-z0-9_-]*)[ ]+([a-z_][a-z0-9_-]*)(?:[ ]*=[ ]*([0-9a-z"-+])){0,1}`, "i"));
+  if (varMatchedRegex.length >= 2) {
+    VarInfo varInfo = {name: varMatchedRegex[2], type: varMatchedRegex[1], docText: blockDocText};
+    if (varMatchedRegex.length >= 3) {
+      varInfo.value = varMatchedRegex[3];
+    }
+
+    static if (varType == VarType.LOCAL) {
+      moduleInfo.localInfos ~= varInfo;
+    } else {
+      moduleInfo.globalsInfos ~= varInfo;
+    }
+  }
+}
+
+/// Procesa las declaraciones de tipos del modulo
+private R processTypesBlock(R)(R text, ref GemixModuleInfo moduleInfo)
+if (isInputRange!R)
+{
+  import std.algorithm.searching : canFind;
+  import std.range : chunks, stride;
+  import std.regex : ctRegex, splitter;
+  import std.typecons : Yes;
+
+  if (text.findSkip("GMXDEFINE_TYPES(")) {
+    text = text.stripLeftEOL.stripLeftSpaces;
+
+    // Obtenemos todo el bloque dentro de GMXDEFINE_TYPES
+    string typesBlock = text.findSplitBefore(");")[0].to!string;
+
+    // Dividimos el bloque en otros que contengan bloques de comentarios y declaraciones de tipos
+    auto typeDecAndCommentBlocks = typesBlock.splitter!(Yes.keepSeparators)(COMMENT_BLOCK_REGEX);
+    string typeDocText = "";
+    foreach (typeDecAndCommentBlock; typeDecAndCommentBlocks) {
+      typeDecAndCommentBlock = typeDecAndCommentBlock.stripLeftEOL.stripLeftSpaces;
+      if (typeDecAndCommentBlock.length == 0) {
+        continue;
+      }
+
+      // Obtenemos el texto del bloque de comentarios que enbace estas declaraciones de funciones
+      if (typeDecAndCommentBlock.canFind("/**")) {
+        typeDocText = processCommentBlock(typeDecAndCommentBlock);
+      } else {
+        foreach (typeDecBlock; typeDecAndCommentBlock.splitter(ctRegex!(`end`, "i"))) {
+          processTypeBlock(typeDecBlock, typeDocText , moduleInfo);
+          typeDocText = "";
+        }
+      }
+    }
+
+    text = text.drop(typesBlock.length);
+  }
+  return text;
+}
+
+/// Procesa una declaración de tipo
+private void processTypeBlock (string text, string typeDocText, ref GemixModuleInfo moduleInfo)
+{
+  import std.algorithm.searching : findSkip;
+  import std.range : drop;
+  import std.regex : ctRegex, matchFirst, replaceAll, splitter;
+
+  text = text
+    .replaceAll(ctRegex!(`\n|\r|"`, "m"), "")
+    .replaceAll(ctRegex!(`\t+`), " ")
+    .replaceAll(ctRegex!(`\s+`), " ")
+    .stripSpaces ;
+
+  TypedefInfo typeInfo;
+  auto typeNameMatch = text.matchFirst(ctRegex!(`type\s+([a-z][a-z0-9_-]*)`, "i"));
+  if (typeNameMatch.length > 0) {
+    typeInfo.name = typeNameMatch[1];
+
+    text = text.drop(typeNameMatch[0].length);
+
+    auto members = text.splitter(ctRegex!(`;`));
+    foreach (member; members) {
+      member = member.stripSpaces;
+      if (member.length == 0) {
+        continue;
+      }
+      Type type = Type.getFromString(member);
+      member.findSkip(" ");
+      TypeMember typeMember = {name:member.stripSpaces, type: type};
+      typeInfo.members ~= typeMember;
+    }
+    typeInfo.docText = typeDocText;
+    moduleInfo.typedefInfos ~= typeInfo;
+  }
+}
+
 /// Procesa las declaraciones de funciones del modulo
-private R processFunctionsBlock(R)(R text, GemixModuleInfo moduleInfo)
+private R processFunctionsBlock(R)(R text, ref GemixModuleInfo moduleInfo)
 if (isInputRange!R)
 {
   import std.algorithm.searching : canFind;
@@ -272,15 +430,15 @@ if (isInputRange!R)
   }
 
   fToken.popFront();
-  funcionInfo.returnType = Type.getFromText(fToken.front);
+  funcionInfo.returnType = Type.getFromFunctionSignature(fToken.front);
   return funcionInfo;
 }
 
 private ParamInfo processSignatureParam(R)(R param)
 if (isInputRange!R)
 {
-  ParamInfo paramInfo = new ParamInfo();
-  paramInfo.type = Type.getFromText(param);
+  ParamInfo paramInfo;
+  paramInfo.type = Type.getFromFunctionSignature(param);
   if (param.findSkip("=")) {
     paramInfo.defaultValue = param;
   }

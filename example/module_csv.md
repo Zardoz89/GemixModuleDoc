@@ -6,16 +6,23 @@ Category: Generic
 System: Common
 
 
+
+
+Bla bla bla bla bla bla
+ble ble ble ble ble ble...
+ 
+
 ## Consts
 
  * `INT sdk_colorchannel_min = 0`
-
  * `INT sdk_colorchannel_max = 255`
-
  * `FLOAT sdk_colorchannel_min_normalized = 0.0f`
-
  * `FLOAT sdk_colorchannel_max_normalized = 1.0f`
 
+
+## Globals
+
+ * `int sdk_normalize_colorchannels = 0`
 
 
 ## Functions
@@ -25,23 +32,21 @@ System: Common
 
 Blabla bla
 
-Name/Path of the CSV file to open
-Size of the array
-Pointer of the array where to write
+
+
 
 
 #### Parameters
 
 | Name              | Type        |                                      |
 |-------------------|-------------|--------------------------------------|
-| filename	| STRING	| 	|
-| size	| INT	| 	|
-| arrayPointer	| INT8*	| 	|
+| filename          | STRING      | Name/Path of the CSV file to open    |
+| size              | INT         | Size of the array                    |
+| arrayPointer      | INT8*       | Pointer of the array where to write  |
 
 #### Return
 
-INT
-number of readed elements on the CSV
+`INT` number of readed elements on the CSV
 
 #### Overloads
 
@@ -77,18 +82,17 @@ INT CSV_ReadFileToArray(STRING filename, INT size, DOUBLE* arrayPointer)
 ### `INT CSV_ReadToArray(INT , INT , INT8* )`
 
  Read from opened file 
-
 #### Parameters
 
 | Name              | Type        |                                      |
 |-------------------|-------------|--------------------------------------|
-| 	| INT	| 	|
-| 	| INT	| 	|
-| 	| INT8*	| 	|
+|                   | INT         |                                      |
+|                   | INT         |                                      |
+|                   | INT8*       |                                      |
 
 #### Return
 
-INT
+`INT`
 
 #### Overloads
 
@@ -124,17 +128,16 @@ INT CSV_ReadToArray(INT , INT , DOUBLE* )
 ### `FLOAT sdk_min(INT , INT )`
 
  Minimimize 
-
 #### Parameters
 
 | Name              | Type        |                                      |
 |-------------------|-------------|--------------------------------------|
-| 	| INT	| 	|
-| 	| INT	| 	|
+|                   | INT         |                                      |
+|                   | INT         |                                      |
 
 #### Return
 
-FLOAT
+`FLOAT`
 
 #### Overloads
 
@@ -149,34 +152,32 @@ sdk_color sdk_min(sdk_color , sdk_color )
 ### `INT sdk_copy(sdk_color* , sdk_color* )`
 
  Copy 
-
 #### Parameters
 
 | Name              | Type        |                                      |
 |-------------------|-------------|--------------------------------------|
-| 	| sdk_color*	| 	|
-| 	| sdk_color*	| 	|
+|                   | sdk_color*  |                                      |
+|                   | sdk_color*  |                                      |
 
 #### Return
 
-INT
+`INT`
 
 
 
 ### `INT sdk_swap(vec2* , vec2* )`
 
  Swap 
-
 #### Parameters
 
 | Name              | Type        |                                      |
 |-------------------|-------------|--------------------------------------|
-| 	| vec2*	| 	|
-| 	| vec2*	| 	|
+|                   | vec2*       |                                      |
+|                   | vec2*       |                                      |
 
 #### Return
 
-INT
+`INT`
 
 #### Overloads
 

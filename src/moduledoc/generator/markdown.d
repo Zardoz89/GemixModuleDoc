@@ -33,7 +33,7 @@ class MarkdownGenerator {
 
   }
 
-  private void generate(R)(R sink, GemixModuleInfo moduleInfo)
+  private void generate(R)(R sink, ref GemixModuleInfo moduleInfo)
   if (isOutputRange!(R, char)) {
     if (moduleInfo.name.length > 0) {
       sink.put(moduleInfo.name);
@@ -64,7 +64,31 @@ class MarkdownGenerator {
       sink.put("## Consts");
       sink.put("\n\n");
 
-      this.generateConsts(sink , moduleInfo.constInfos);
+      this.generateVarsList(sink , moduleInfo.constInfos);
+      sink.put("\n\n");
+    }
+
+    if (moduleInfo.globalsInfos.length > 0) {
+      sink.put("## Globals");
+      sink.put("\n\n");
+
+      this.generateVarsList(sink , moduleInfo.globalsInfos);
+      sink.put("\n\n");
+    }
+
+    if (moduleInfo.localInfos.length > 0) {
+      sink.put("## Locals");
+      sink.put("\n\n");
+
+      this.generateVarsList(sink , moduleInfo.localInfos);
+      sink.put("\n\n");
+    }
+
+    if (moduleInfo.typedefInfos.length > 0) {
+      sink.put("## Types");
+      sink.put("\n\n");
+
+      this.generateTypes(sink , moduleInfo.typedefInfos);
       sink.put("\n\n");
     }
 
@@ -76,7 +100,6 @@ class MarkdownGenerator {
       sink.put("\n\n");
 
       auto sortedFunctionNames = moduleInfo.sortedFunctionNames;
-      //moduleInfo.functions.byKey().array.sort!("a < b");
       foreach(functionName; sortedFunctionNames) {
         this.generateFunctions(sink, moduleInfo.functions[functionName]);
         sink.put("\n\n");
@@ -84,32 +107,77 @@ class MarkdownGenerator {
     }
   }
 
-  private void generateConsts(R)(R sink, ConstInfo[] constInfos)
+  private void generateVarsList(R)(R sink, VarInfo[] varInfos)
   if (isOutputRange!(R, char)) {
-    if (constInfos.empty) {
-      return;
-    }
-
-    foreach(constInfo; constInfos) {
-      this.generateConst(sink, constInfo);
+    foreach(varInfo; varInfos) {
+      this.generateVar(sink, varInfo);
     }
   }
 
-  private void generateConst(R)(R sink, ConstInfo constInfo)
+  private void generateVar(R)(R sink, VarInfo varInfo)
   if (isOutputRange!(R, char)) {
     sink.put(" * `");
-    sink.put(constInfo.type);
+    sink.put(varInfo.type);
     sink.put(" ");
-    sink.put(constInfo.name);
-    sink.put(" = ");
-    sink.put(constInfo.value);
-    sink.put("`\n");
-    if (constInfo.docText.length > 0) {
-      sink.put("\t");
-      sink.put(constInfo.docText);
-      sink.put("\n");
+    sink.put(varInfo.name);
+    if (varInfo.value.length > 0) {
+      sink.put(" = ");
+      sink.put(varInfo.value);
     }
+    sink.put("`\n");
+    if (varInfo.docText.length > 0) {
+      sink.put("\t\n");
+      sink.put("\t");
+      sink.put(varInfo.docText);
+      sink.put("\n\t\n");
+    }
+  }
+
+  private void generateTypes(R)(R sink, TypedefInfo[] typedefInfos)
+  if (isOutputRange!(R, char)) {
+    if (typedefInfos.empty) {
+      return;
+    }
+
+    foreach(typedefInfo; typedefInfos) {
+      this.generateType(sink, typedefInfo);
+    }
+  }
+
+  private void generateType(R)(R sink, TypedefInfo typedefInfo)
+  if (isOutputRange!(R, char)) {
+    sink.put("### ");
+    sink.put(typedefInfo.name);
+    sink.put("\n\n");
+
+    if (typedefInfo.docText.length > 0) {
+      sink.put(typedefInfo.docText);
+      sink.put("\n\n");
+    }
+
+    sink.put("#### Members");
+    sink.put("\n\n");
+    this.typeTable(sink, typedefInfo.members);
     sink.put("\n");
+  }
+
+  /// Genera la tabla de miembros de un typedef o parámetros de una función
+  private void typeTable(R)(R sink, TypeMember[] typeMembers)
+  if (isOutputRange!(R, char)) {
+    import std.string : leftJustify;
+
+    sink.put("| Name              | Type        |                                      |\n");
+    sink.put("|-------------------|-------------|--------------------------------------|\n");
+
+    foreach(member; typeMembers) {
+      sink.put("| ");
+      sink.put(member.name.leftJustify(17));
+      sink.put(" | ");
+      sink.put(member.type.toString.leftJustify(11));
+      sink.put(" | ");
+      sink.put(member.docText.leftJustify(36));
+      sink.put(" |\n");
+    }
   }
 
   private void generateFunctions(R)(R sink, FunctionInfo[] functionInfos)
@@ -128,7 +196,6 @@ class MarkdownGenerator {
         this.generateFunction(sink, functionInfo, false);
       }
     }
-
   }
 
   private void generateFunction(R)(R sink, FunctionInfo functionInfo, bool showDocumentation)
@@ -144,36 +211,25 @@ class MarkdownGenerator {
 
       if (functionInfo.docBody.length > 0) {
         sink.put(functionInfo.docBody);
-        sink.put("\n\n");
+        sink.put("\n");
       }
 
       if (functionInfo.params.length > 0) {
         sink.put("#### Parameters");
         sink.put("\n\n");
-        sink.put("| Name              | Type        |                                      |\n");
-        sink.put("|-------------------|-------------|--------------------------------------|\n");
-
-        foreach(paramInfo; functionInfo.params) {
-          sink.put("| ");
-          sink.put(paramInfo.name);
-          sink.put("\t| ");
-          sink.put(paramInfo.type.toString);
-          sink.put("\t| ");
-          sink.put(paramInfo.docText);
-          sink.put("\t|\n");
-        }
+        this.typeTable(sink, functionInfo.params);
         sink.put("\n");
       }
 
       sink.put("#### Return");
-      sink.put("\n\n");
+      sink.put("\n\n`");
       sink.put(functionInfo.returnType.toString);
-      sink.put("\n");
+      sink.put("`");
       if (functionInfo.docReturnBody.length > 0) {
+        sink.put(" ");
         sink.put(functionInfo.docReturnBody);
-        sink.put("\n");
       }
-      sink.put("\n");
+      sink.put("\n\n");
     } else {
 
       sink.put("```gemix\n");

@@ -1,7 +1,7 @@
-/* Gemix Studio - Copyright (c) 2005-2013 Skygem Software. All rights reserved. */
 /**
  * @name SDK Example
- **/
+ * Gemix Studio - Copyright (c) 2005-2013 Skygem Software. All rights reserved.
+ */
 #include "sdkexample.h"
 
 GMXDEFINE_LIBRARY_PROPERTIES(GMXEXT_mod_csv,
@@ -26,24 +26,52 @@ GMXDEFINE_LIBRARY_EXPORTS(GMXEXT_mod_sdkexample,
 	);
 
 	/* TYPES */
-	GMXDEFINE_TYPES("type sdk_color "
-	                  "float r;"
-	                  "float g;"
-	                  "float b;"
-	                  "float a;"
-	                "end "
+	GMXDEFINE_TYPES(
+	  "type MyType "
+      "int8 r;"
+      "int8 g;"
+      "int8 b;"
+      "int16 a;"
+    "end "
+	  "type OtherType "
+      "int8* ptr;"
+      "int size;"
+    "end "
+    /** A type... */
+	  "type sdk_color "
+      "float r;"
+      "float g;"
+      "float b;"
+      "float a;"
+    "end "
+    "type ComplexType "
+      "sdk_color color;"
+      "int32 vec[3];"
+      "bool enabled;"
+    "end "
 	);
 
 	/* GLOBALS */
-	GMXDEFINE_GLOBALS("int sdk_normalize_colorchannels = 0;"
+	GMXDEFINE_GLOBALS(
+	    /** Should auto normalize color channels ? */
+	    "bool sdk_normalize_colorchannels = 0;"
+	    "int8 sdk_colorchannel_wide = 8;"
+	);
+
+	/* LOCALS */
+	GMXDEFINE_LOCALS(
+	    /** Colorize object ? */
+	    "bool colorize = 0;"
+	    "sdk_color tint;"
 	);
 
 	/* FUNCTIONS */
 	GMXDEFINE_FUNCTIONS(
 	/**
 	 * Returns the lower/minimal value from two values
-	 * @param value1
+	 * @param value1 A value
 	 * @param value2
+	 * @return the minimal/lowest value from value1 and value2
 	 */
 	    "sdk_min(I,I)"                         , "F"           , 0, GMXEXT_sdkexample_sdk_min ,
       "sdk_min(F,F)"                         , "F"           , 0, GMXEXT_sdkexample_sdk_minF,
@@ -56,10 +84,14 @@ GMXDEFINE_LIBRARY_EXPORTS(GMXEXT_mod_sdkexample,
       "sdk_copy(TP(sdk_color),TP(sdk_color))", "I"           , 0, GMXEXT_sdkexample_sdk_copy,
   /**
    * Swaps two values
+   * @param vectorA the first vector
+   * @param vectorB the second vector
    */
-      "sdk_swap(TP(vec2),TP(vec2))"          , "I"           , 0, GMXEXT_sdkexample_sdk_swap_vec2,
-      "sdk_swap(TP(vec3),TP(vec3))"          , "I"           , 0, GMXEXT_sdkexample_sdk_swap_vec3,
-      "sdk_swap(TP(vec4),TP(vec4))"          , "I"           , 0, GMXEXT_sdkexample_sdk_swap_vec4
+      "sdk_swap(TP(vec2),TP(vec2))"          , "V"           , 0, GMXEXT_sdkexample_sdk_swap_vec2,
+      "sdk_swap(TP(vec3),TP(vec3))"          , "V"           , 0, GMXEXT_sdkexample_sdk_swap_vec3,
+      "sdk_swap(TP(vec4),TP(vec4))"          , "V"           , 0, GMXEXT_sdkexample_sdk_swap_vec4,
+      "sdk_misc_fun(VP)"                     , "V"           , 1, GMXEXT_sdkexample_sdk_misc_fun,
+      "sdk_misc_fun(STP(an_struct))"         , "V"           , 1, GMXEXT_sdkexample_sdk_misc_fun_st,
 	);
 
 	/* ENTRYPOINTS */

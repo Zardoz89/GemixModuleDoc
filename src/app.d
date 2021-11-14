@@ -7,7 +7,7 @@ import moduledoc.parseheader;
 import moduledoc.data;
 import moduledoc.generator.markdown;
 
-enum VERSION = "v0.1.2";
+enum VERSION = "v0.1.3";
 
 int main(string[] args) {
   import std.getopt;
@@ -41,7 +41,7 @@ int main(string[] args) {
     moduleInfos ~= processFile(inputFile);
   }
 
-  foreach(moduleInfo; moduleInfos) {
+  foreach(ref moduleInfo; moduleInfos) {
     moduleInfo.parseDocText();
   }
 

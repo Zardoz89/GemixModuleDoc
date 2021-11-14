@@ -6,17 +6,37 @@ Category: Generic
 System: Common
 
 
+
+Gemix Studio - Copyright (c) 2005-2013 Skygem Software. All rights reserved.
+ 
+
 ## Consts
 
  * `INT sdk_colorchannel_min = 0`
+	
 	Minimal valid value for a color channel
-
+	
  * `INT sdk_colorchannel_max = 255`
-
  * `FLOAT sdk_colorchannel_min_normalized = 0.0f`
-
  * `FLOAT sdk_colorchannel_max_normalized = 1.0f`
 
+
+## Globals
+
+ * `bool sdk_normalize_colorchannels = 0`
+	
+	 Should auto normalize color channels ? 
+	
+ * `int8 sdk_colorchannel_wide = 8`
+
+
+## Locals
+
+ * `bool colorize = 0`
+	
+	 Colorize object ? 
+	
+ * `sdk_color tint`
 
 
 ## Functions
@@ -32,12 +52,12 @@ Returns the lower/minimal value from two values
 
 | Name              | Type        |                                      |
 |-------------------|-------------|--------------------------------------|
-| value1	| INT	| 	|
-| value2	| INT	| 	|
+| value1            | INT         | A value                              |
+| value2            | INT         |                                      |
 
 #### Return
 
-FLOAT
+`FLOAT` the minimal/lowest value from value1 and value2
 
 #### Overloads
 
@@ -55,17 +75,16 @@ sdk_color sdk_min(sdk_color value1, sdk_color value2)
 
 Old way
 
-
 #### Parameters
 
 | Name              | Type        |                                      |
 |-------------------|-------------|--------------------------------------|
-| 	| sdk_color	| 	|
-| 	| sdk_color	| 	|
+|                   | sdk_color   |                                      |
+|                   | sdk_color   |                                      |
 
 #### Return
 
-sdk_color
+`sdk_color`
 
 
 
@@ -75,39 +94,58 @@ sdk_color
 
 | Name              | Type        |                                      |
 |-------------------|-------------|--------------------------------------|
-| 	| sdk_color*	| 	|
-| 	| sdk_color*	| 	|
+|                   | sdk_color*  |                                      |
+|                   | sdk_color*  |                                      |
 
 #### Return
 
-INT
+`INT`
 
 
 
-### `INT sdk_swap(vec2* , vec2* )`
+### `VOID sdk_swap(vec2* vectorA, vec2* vectorB)`
 
 
 Swaps two values
-   
+
 
 #### Parameters
 
 | Name              | Type        |                                      |
 |-------------------|-------------|--------------------------------------|
-| 	| vec2*	| 	|
-| 	| vec2*	| 	|
+| vectorA           | vec2*       | the first vector                     |
+| vectorB           | vec2*       | the second vector                    |
 
 #### Return
 
-INT
+`VOID`
 
 #### Overloads
 
 ```gemix
-INT sdk_swap(vec3* , vec3* )
+VOID sdk_swap(vec3* vectorA, vec3* vectorB)
 ```
 ```gemix
-INT sdk_swap(vec4* , vec4* )
+VOID sdk_swap(vec4* vectorA, vec4* vectorB)
+```
+
+
+### `VOID sdk_misc_fun(VOID* )`
+
+#### Parameters
+
+| Name              | Type        |                                      |
+|-------------------|-------------|--------------------------------------|
+|                   | VOID*       |                                      |
+
+#### Return
+
+`VOID`
+
+#### Overloads
+
+```gemix
+VOID sdk_misc_fun(Struct* )
 ```
 
 

@@ -33,6 +33,7 @@ enum System {
 /// Tipos primitivos de Gemix
 enum BasicType {
   Unknow = "?",
+  Void   = "VOID",
   Byte   = "BYTE",
   Word   = "WORD",
   DWord  = "DWORD",
@@ -48,7 +49,10 @@ enum BasicType {
   UInt64 = "UINT64",
   Float  = "FLOAT",
   Double = "DOUBLE",
+  Bool   = "BOOL",
   String = "STRING",
+  Struct = "Struct",
+  FObject= "FObject",
   Type   = "TypeDef"
 }
 
@@ -72,7 +76,7 @@ struct Type {
     return typeName ~ "*".repeat(this.indirectionLevel).joiner().to!string;
   }
 
-  public static Type getFromText(R)(R text)
+  public static Type getFromFunctionSignature(R)(R text)
   if (isInputRange!R)
   {
     import std.algorithm.searching : canFind, count;
@@ -100,17 +104,25 @@ struct Type {
       type.type = BasicType.UInt;
     } else if (text.canFind("I")) {
       type.type = BasicType.Int;
+    } else if (text.canFind("FO")) {
+      type.type = BasicType.FObject;
     } else if (text.canFind("F")) {
       type.type = BasicType.Float;
     } else if (text.canFind("D")) {
       type.type = BasicType.Double;
+    } else if (text.canFind("ST")) {
+      type.type = BasicType.Struct;
     } else if (text.canFind("S")) {
       type.type = BasicType.String;
+    } else if (text.canFind("V")) {
+      type.type = BasicType.Void;
+    } else if (text.canFind("B")) {
+      type.type = BasicType.Bool;
     } else if (text.canFind("T")) {
       type.type = BasicType.Type;
 
       import std.regex : matchFirst, ctRegex;
-      auto matchTypeName = text.matchFirst(ctRegex!(`\(([a-zA-Z0-9_-]+)\)`));
+      auto matchTypeName = text.matchFirst(ctRegex!(`\(([a-z0-9_-]+)\)`, "i"));
       if (!matchTypeName.empty) {
         type.typeName = matchTypeName[1];
       }
@@ -118,12 +130,63 @@ struct Type {
     type.indirectionLevel = text.count('P');
     return type;
   }
+
+  public static Type getFromString(string text)
+  {
+    import std.algorithm.searching : count;
+    import std.regex : ctRegex, match;
+
+    Type type;
+    if (text.match(ctRegex!(`void`, "i"))) {
+      type.type = BasicType.Void;
+    } else if (text.match(ctRegex!(`uint64`, "i"))) {
+      type.type = BasicType.UInt64;
+    } else if (text.match(ctRegex!(`uint32`, "i"))) {
+      type.type = BasicType.UInt32;
+    } else if (text.match(ctRegex!(`uint16`, "i"))) {
+      type.type = BasicType.UInt16;
+    } else if (text.match(ctRegex!(`uint8`, "i"))) {
+      type.type = BasicType.UInt8;
+    } else if (text.match(ctRegex!(`int64`, "i"))) {
+      type.type = BasicType.Int64;
+    } else if (text.match(ctRegex!(`int32`, "i"))) {
+      type.type = BasicType.Int32;
+    } else if (text.match(ctRegex!(`int16`, "i"))) {
+      type.type = BasicType.Int16;
+    } else if (text.match(ctRegex!(`int8`, "i"))) {
+      type.type = BasicType.Int8;
+    } else if (text.match(ctRegex!(`uint`, "i"))) {
+      type.type = BasicType.UInt;
+    } else if (text.match(ctRegex!(`int`, "i"))) {
+      type.type = BasicType.Int;
+    } else if (text.match(ctRegex!(`float`, "i"))) {
+      type.type = BasicType.Float;
+    } else if (text.match(ctRegex!(`double`, "i"))) {
+      type.type = BasicType.Double;
+    } else if (text.match(ctRegex!(`string`, "i"))) {
+      type.type = BasicType.String;
+    } else if (text.match(ctRegex!(`bool`, "i"))) {
+      type.type = BasicType.Bool;
+    } else if (text.match(ctRegex!(`fobject`, "i"))) {
+      type.type = BasicType.FObject;
+    } else {
+      type.type = BasicType.Type;
+
+      import std.regex : matchFirst, ctRegex;
+      auto matchTypeName = text.matchFirst(ctRegex!(`[a-z][a-z0-9_-]+`, "i"));
+      if (!matchTypeName.empty) {
+        type.typeName = matchTypeName[0];
+      }
+    }
+    type.indirectionLevel = text.count('*');
+    return type;
+  }
 }
 
 /**
  * Contenedor de la información parseada de un modulo Gemix
  */
-class GemixModuleInfo {
+struct GemixModuleInfo {
   /// Nombre del modulo
   string name;
 
@@ -137,7 +200,16 @@ class GemixModuleInfo {
   System system = System.Null;
 
   /// Contantes definidas en el modulo
-  ConstInfo[] constInfos;
+  VarInfo[] constInfos;
+
+  /// Globales definidas en el modulo
+  VarInfo[] globalsInfos;
+
+  /// Localess definidas en el modulo
+  VarInfo[] localInfos;
+
+  /// Tipos defininos en el modulo
+  TypedefInfo[] typedefInfos;
 
   /// Información de las funciones definidas en el módulo
   FunctionInfo[][string] functions;
@@ -152,13 +224,13 @@ class GemixModuleInfo {
   public void parseDocText() {
     import std.regex : matchFirst, replaceAll, ctRegex;
 
-    auto nameMatch = this.docText.matchFirst(ctRegex!`@name\s+(.*)`);
+    auto nameMatch = this.docText.matchFirst(ctRegex!(`@name\s+(.*)`, "i"));
     if (nameMatch.length > 0) {
       this.name = nameMatch[1].stripSpaces;
     }
 
     // Una vez extraido la información util de documentaciñon, obtenemos el cuerpo del texto de documentación
-    this.docBody = this.docText.replaceAll(DOC_ENTRYPOINT_REGEX, "").replaceAll(ctRegex!`\s*\*\s*`, "");
+    this.docBody = this.docText.replaceAll(ctRegex!("@\\w+.*$", "m"), "");
 
     foreach(overloadedFunctions; this.functions.byValue()) {
       foreach(overloadFunction; overloadedFunctions) {
@@ -167,7 +239,6 @@ class GemixModuleInfo {
     }
   }
 
-  override
   public string toString() {
     string ret =
       "Name: " ~ this.name ~  ", "
@@ -185,17 +256,30 @@ class GemixModuleInfo {
   }
 }
 
-struct ConstInfo {
-  /// Nombre de la constante
+/// Representa una constante, variable global o local
+struct VarInfo {
+  /// Nombre
   string name;
 
-  /// Tipado de la constante
+  /// Tipado
   string type;
 
-  /// Valor de la constante
+  /// Valor
   string value;
 
-  /// Documentación de la constante
+  /// Documentación
+  string docText;
+}
+
+/// Representa una definición de un tipo
+struct TypedefInfo {
+  /// Nombre del tipo
+  string name;
+
+  /// Miembros del tipo
+  TypeMember[] members;
+
+  /// Documentación de la definición del tipo
   string docText;
 }
 
@@ -226,11 +310,12 @@ class FunctionInfo {
   /// Es una función marcada como *legacy* y que por lo tanto no se recomienda usar.
   bool isLegacy;
 
-  /// Parsea el texto de documentación del módulo
+  /// Parsea el texto de documentación de la función
   public void parseDocText() {
     import std.regex : matchAll, matchFirst, replaceAll, ctRegex;
 
     auto paramMatches = this.docText.matchAll(PARAM_REGEX);
+
     size_t index;
     foreach(paramMatch ; paramMatches) {
       if (index >= this.params.length) {
@@ -252,7 +337,7 @@ class FunctionInfo {
     this.docText = this.docText.replaceAll(LEGACY_REGEX, "");
 
     // Una vez extraido la información util de documentaciñon, obtenemos el cuerpo del texto de documentación
-    this.docBody = this.docText/*.replaceAll(DOC_ENTRYPOINT_REGEX, "")*/.replaceAll(ctRegex!`\s*\*\s*`, "\n");
+    this.docBody = this.docText.replaceAll(ctRegex!`\s*\*\s*`, "\n");
   }
 
   override
@@ -276,22 +361,23 @@ class FunctionInfo {
   }
 }
 
-/// Información de un parámetro de una función
-class ParamInfo {
 
-  /// Nombre del parámetro
+
+/// Información de un parámetro de una función o miembro de un tipo
+struct ParamInfo {
+
+  /// Nombre del parámetro o miembro
   string name;
 
-  /// Tipado del parámetro
+  /// Tipado del parámetro o miembro
   Type type;
 
   /// Valor por defecto
   string defaultValue;
 
-  /// Documentación del parámetro
+  /// Documentación del parámetro o miembro
   string docText;
 
-  override
   public string toString() {
     string ret =
       "Name: " ~ this.name ~  ", "
@@ -305,4 +391,7 @@ class ParamInfo {
     return "p{" ~ ret ~ "}";
   }
 }
+
+/// Ditto
+alias TypeMember = ParamInfo;
 
