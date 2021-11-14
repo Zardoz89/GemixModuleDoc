@@ -27,7 +27,7 @@ package enum IDENTIFIER_REGEX = ctRegex!(`[a-z_][a-z0-9_-]+`, "i");
 package enum DOC_ENTRYPOINT_REGEX = ctRegex!(`@\w+( |\t)*(.*)\n`, "s");
 
 /// Regex para encontrar una entrada @param XXXX ...
-package enum PARAM_REGEX = ctRegex!(`@param\s+([a-zA-Z][a-zA-Z0-9_-]*)(?:\s+(.*)){0,1}?`);
+package enum PARAM_REGEX = ctRegex!(`@param[ ]+([a-zA-Z][a-zA-Z0-9_-]*)([ ]+.*){0,1}`);
 
 /// Regex para encontrar una entrada @return XXXX
 package enum RETURN_REGEX = ctRegex!`@return\s+(.*)`;

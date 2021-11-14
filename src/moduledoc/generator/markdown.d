@@ -198,7 +198,7 @@ class MarkdownGenerator {
 
       if (functionInfo.docBody.length > 0) {
         sink.put(functionInfo.docBody);
-        sink.put("\n\n");
+        sink.put("\n");
       }
 
       if (functionInfo.params.length > 0) {
@@ -209,14 +209,14 @@ class MarkdownGenerator {
       }
 
       sink.put("#### Return");
-      sink.put("\n\n");
+      sink.put("\n\n`");
       sink.put(functionInfo.returnType.toString);
-      sink.put("\n");
+      sink.put("`");
       if (functionInfo.docReturnBody.length > 0) {
+        sink.put(" ");
         sink.put(functionInfo.docReturnBody);
-        sink.put("\n");
       }
-      sink.put("\n");
+      sink.put("\n\n");
     } else {
 
       sink.put("```gemix\n");

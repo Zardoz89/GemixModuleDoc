@@ -74,7 +74,6 @@ Gemix Studio - Copyright (c) 2005-2013 Skygem Software. All rights reserved.
 
 
 Returns the lower/minimal value from two values
-A value
 
 
 
@@ -82,13 +81,12 @@ A value
 
 | Name              | Type        |                                      |
 |-------------------|-------------|--------------------------------------|
-| value1            | INT         |                                      |
+| value1            | INT         | A value                              |
 | value2            | INT         |                                      |
 
 #### Return
 
-FLOAT
-the minimal/lowest value from value1 and value2
+`FLOAT` the minimal/lowest value from value1 and value2
 
 #### Overloads
 
@@ -106,7 +104,6 @@ sdk_color sdk_min(sdk_color value1, sdk_color value2)
 
 Old way
 
-
 #### Parameters
 
 | Name              | Type        |                                      |
@@ -116,7 +113,7 @@ Old way
 
 #### Return
 
-sdk_color
+`sdk_color`
 
 
 
@@ -131,7 +128,7 @@ sdk_color
 
 #### Return
 
-INT
+`INT`
 
 
 
@@ -139,20 +136,18 @@ INT
 
 
 Swaps two values
-the first vector
-the second vector
-   
+
 
 #### Parameters
 
 | Name              | Type        |                                      |
 |-------------------|-------------|--------------------------------------|
-| vectorA           | vec2*       |                                      |
-| vectorB           | vec2*       |                                      |
+| vectorA           | vec2*       | the first vector                     |
+| vectorB           | vec2*       | the second vector                    |
 
 #### Return
 
-VOID
+`VOID`
 
 #### Overloads
 
@@ -174,7 +169,7 @@ VOID sdk_swap(vec4* vectorA, vec4* vectorB)
 
 #### Return
 
-VOID
+`VOID`
 
 #### Overloads
 

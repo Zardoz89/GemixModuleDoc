@@ -304,11 +304,12 @@ class FunctionInfo {
   /// Es una función marcada como *legacy* y que por lo tanto no se recomienda usar.
   bool isLegacy;
 
-  /// Parsea el texto de documentación del módulo
+  /// Parsea el texto de documentación de la función
   public void parseDocText() {
     import std.regex : matchAll, matchFirst, replaceAll, ctRegex;
 
     auto paramMatches = this.docText.matchAll(PARAM_REGEX);
+
     size_t index;
     foreach(paramMatch ; paramMatches) {
       if (index >= this.params.length) {
@@ -330,7 +331,7 @@ class FunctionInfo {
     this.docText = this.docText.replaceAll(LEGACY_REGEX, "");
 
     // Una vez extraido la información util de documentaciñon, obtenemos el cuerpo del texto de documentación
-    this.docBody = this.docText/*.replaceAll(DOC_ENTRYPOINT_REGEX, "")*/.replaceAll(ctRegex!`\s*\*\s*`, "\n");
+    this.docBody = this.docText.replaceAll(ctRegex!`\s*\*\s*`, "\n");
   }
 
   override

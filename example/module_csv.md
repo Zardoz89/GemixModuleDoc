@@ -42,23 +42,21 @@ ble ble ble ble ble ble...
 
 Blabla bla
 
-Name/Path of the CSV file to open
-Size of the array
-Pointer of the array where to write
+
+
 
 
 #### Parameters
 
 | Name              | Type        |                                      |
 |-------------------|-------------|--------------------------------------|
-| filename          | STRING      |                                      |
-| size              | INT         |                                      |
-| arrayPointer      | INT8*       |                                      |
+| filename          | STRING      | Name/Path of the CSV file to open    |
+| size              | INT         | Size of the array                    |
+| arrayPointer      | INT8*       | Pointer of the array where to write  |
 
 #### Return
 
-INT
-number of readed elements on the CSV
+`INT` number of readed elements on the CSV
 
 #### Overloads
 
@@ -94,7 +92,6 @@ INT CSV_ReadFileToArray(STRING filename, INT size, DOUBLE* arrayPointer)
 ### `INT CSV_ReadToArray(INT , INT , INT8* )`
 
  Read from opened file 
-
 #### Parameters
 
 | Name              | Type        |                                      |
@@ -105,7 +102,7 @@ INT CSV_ReadFileToArray(STRING filename, INT size, DOUBLE* arrayPointer)
 
 #### Return
 
-INT
+`INT`
 
 #### Overloads
 
@@ -141,7 +138,6 @@ INT CSV_ReadToArray(INT , INT , DOUBLE* )
 ### `FLOAT sdk_min(INT , INT )`
 
  Minimimize 
-
 #### Parameters
 
 | Name              | Type        |                                      |
@@ -151,7 +147,7 @@ INT CSV_ReadToArray(INT , INT , DOUBLE* )
 
 #### Return
 
-FLOAT
+`FLOAT`
 
 #### Overloads
 
@@ -166,7 +162,6 @@ sdk_color sdk_min(sdk_color , sdk_color )
 ### `INT sdk_copy(sdk_color* , sdk_color* )`
 
  Copy 
-
 #### Parameters
 
 | Name              | Type        |                                      |
@@ -176,14 +171,13 @@ sdk_color sdk_min(sdk_color , sdk_color )
 
 #### Return
 
-INT
+`INT`
 
 
 
 ### `INT sdk_swap(vec2* , vec2* )`
 
  Swap 
-
 #### Parameters
 
 | Name              | Type        |                                      |
@@ -193,7 +187,7 @@ INT
 
 #### Return
 
-INT
+`INT`
 
 #### Overloads
 
