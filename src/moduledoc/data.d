@@ -174,8 +174,6 @@ struct Type {
 
       import std.regex : matchFirst, ctRegex;
       auto matchTypeName = text.matchFirst(ctRegex!(`[a-z][a-z0-9_-]+`, "i"));
-      import std.stdio;
-      writeln(matchTypeName);
       if (!matchTypeName.empty) {
         type.typeName = matchTypeName[0];
       }

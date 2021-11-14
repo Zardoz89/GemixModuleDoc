@@ -58,8 +58,6 @@ Members:
  * `INT32 vec[3]`
  * `BOOL enabled`
 `
- A type... 
-
 
 
 ## Functions

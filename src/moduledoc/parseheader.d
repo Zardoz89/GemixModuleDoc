@@ -210,6 +210,7 @@ if (isInputRange!R)
       } else {
         foreach (typeDecBlock; typeDecAndCommentBlock.splitter(ctRegex!(`end`, "i"))) {
           processTypeBlock(typeDecBlock, typeDocText , moduleInfo);
+          typeDocText = "";
         }
       }
     }
