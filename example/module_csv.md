@@ -20,19 +20,9 @@ ble ble ble ble ble ble...
  * `FLOAT sdk_colorchannel_max_normalized = 1.0f`
 
 
-## Types
+## Globals
 
-### sdk_color
-
-#### Members
-
-| Name              | Type        |                                      |
-|-------------------|-------------|--------------------------------------|
-| r                 | FLOAT       |                                      |
-| g                 | FLOAT       |                                      |
-| b                 | FLOAT       |                                      |
-| a                 | FLOAT       |                                      |
-
+ * `int sdk_normalize_colorchannels = 0`
 
 
 ## Functions

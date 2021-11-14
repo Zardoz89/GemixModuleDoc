@@ -52,7 +52,17 @@ GMXDEFINE_LIBRARY_EXPORTS(GMXEXT_mod_sdkexample,
 	);
 
 	/* GLOBALS */
-	GMXDEFINE_GLOBALS("int sdk_normalize_colorchannels = 0;"
+	GMXDEFINE_GLOBALS(
+	    /** Should auto normalize color channels ? */
+	    "bool sdk_normalize_colorchannels = 0;"
+	    "int8 sdk_colorchannel_wide = 8;"
+	);
+
+	/* LOCALS */
+	GMXDEFINE_LOCALS(
+	    /** Colorize object ? */
+	    "bool colorize = 0;"
+	    "sdk_color tint;"
 	);
 
 	/* FUNCTIONS */

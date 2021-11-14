@@ -202,6 +202,12 @@ struct GemixModuleInfo {
   /// Contantes definidas en el modulo
   VarInfo[] constInfos;
 
+  /// Globales definidas en el modulo
+  VarInfo[] globalsInfos;
+
+  /// Localess definidas en el modulo
+  VarInfo[] localInfos;
+
   /// Tipos defininos en el modulo
   TypedefInfo[] typedefInfos;
 

@@ -21,51 +21,22 @@ Gemix Studio - Copyright (c) 2005-2013 Skygem Software. All rights reserved.
  * `FLOAT sdk_colorchannel_max_normalized = 1.0f`
 
 
-## Types
+## Globals
 
-### MyType
+ * `bool sdk_normalize_colorchannels = 0`
+	
+	 Should auto normalize color channels ? 
+	
+ * `int8 sdk_colorchannel_wide = 8`
 
-#### Members
 
-| Name              | Type        |                                      |
-|-------------------|-------------|--------------------------------------|
-| r                 | INT8        |                                      |
-| g                 | INT8        |                                      |
-| b                 | INT8        |                                      |
-| a                 | INT16       |                                      |
+## Locals
 
-### OtherType
-
-#### Members
-
-| Name              | Type        |                                      |
-|-------------------|-------------|--------------------------------------|
-| ptr               | INT8*       |                                      |
-| size              | INT         |                                      |
-
-### sdk_color
-
- A type... 
-
-#### Members
-
-| Name              | Type        |                                      |
-|-------------------|-------------|--------------------------------------|
-| r                 | FLOAT       |                                      |
-| g                 | FLOAT       |                                      |
-| b                 | FLOAT       |                                      |
-| a                 | FLOAT       |                                      |
-
-### ComplexType
-
-#### Members
-
-| Name              | Type        |                                      |
-|-------------------|-------------|--------------------------------------|
-| color             | sdk_color   |                                      |
-| vec[3]            | INT32       |                                      |
-| enabled           | BOOL        |                                      |
-
+ * `bool colorize = 0`
+	
+	 Colorize object ? 
+	
+ * `sdk_color tint`
 
 
 ## Functions

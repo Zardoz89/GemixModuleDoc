@@ -68,6 +68,22 @@ class MarkdownGenerator {
       sink.put("\n\n");
     }
 
+    if (moduleInfo.globalsInfos.length > 0) {
+      sink.put("## Globals");
+      sink.put("\n\n");
+
+      this.generateVarsList(sink , moduleInfo.globalsInfos);
+      sink.put("\n\n");
+    }
+
+    if (moduleInfo.localInfos.length > 0) {
+      sink.put("## Locals");
+      sink.put("\n\n");
+
+      this.generateVarsList(sink , moduleInfo.localInfos);
+      sink.put("\n\n");
+    }
+
     if (moduleInfo.typedefInfos.length > 0) {
       sink.put("## Types");
       sink.put("\n\n");
@@ -104,8 +120,10 @@ class MarkdownGenerator {
     sink.put(varInfo.type);
     sink.put(" ");
     sink.put(varInfo.name);
-    sink.put(" = ");
-    sink.put(varInfo.value);
+    if (varInfo.value.length > 0) {
+      sink.put(" = ");
+      sink.put(varInfo.value);
+    }
     sink.put("`\n");
     if (varInfo.docText.length > 0) {
       sink.put("\t\n");
