@@ -39,6 +39,53 @@ Gemix Studio - Copyright (c) 2005-2013 Skygem Software. All rights reserved.
  * `sdk_color tint`
 
 
+## Types
+
+### MyType
+
+#### Members
+
+| Name              | Type        |                                      |
+|-------------------|-------------|--------------------------------------|
+| r                 | INT8        |                                      |
+| g                 | INT8        |                                      |
+| b                 | INT8        |                                      |
+| a                 | INT16       |                                      |
+
+### OtherType
+
+#### Members
+
+| Name              | Type        |                                      |
+|-------------------|-------------|--------------------------------------|
+| ptr               | INT8*       |                                      |
+| size              | INT         |                                      |
+
+### sdk_color
+
+ A type... 
+
+#### Members
+
+| Name              | Type        |                                      |
+|-------------------|-------------|--------------------------------------|
+| r                 | FLOAT       |                                      |
+| g                 | FLOAT       |                                      |
+| b                 | FLOAT       |                                      |
+| a                 | FLOAT       |                                      |
+
+### ComplexType
+
+#### Members
+
+| Name              | Type        |                                      |
+|-------------------|-------------|--------------------------------------|
+| color             | sdk_color   |                                      |
+| vec[3]            | INT32       |                                      |
+| enabled           | BOOL        |                                      |
+
+
+
 ## Functions
 
 ### `FLOAT sdk_min(INT value1, INT value2)`

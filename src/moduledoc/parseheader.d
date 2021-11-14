@@ -116,9 +116,9 @@ if (isInputRange!R)
   if (text.findSkip("GMXDEFINE_LIBRARY_EXPORTS")) {
     text = text
       .processConstsBlock(moduleInfo)
+      .processTypesBlock(moduleInfo)
       .processGlobalsBlock(moduleInfo)
       .processLocalsBlock(moduleInfo)
-      .processTypesBlock(moduleInfo)
       .processFunctionsBlock(moduleInfo);
   }
   return text;

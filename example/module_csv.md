@@ -25,6 +25,21 @@ ble ble ble ble ble ble...
  * `int sdk_normalize_colorchannels = 0`
 
 
+## Types
+
+### sdk_color
+
+#### Members
+
+| Name              | Type        |                                      |
+|-------------------|-------------|--------------------------------------|
+| r                 | FLOAT       |                                      |
+| g                 | FLOAT       |                                      |
+| b                 | FLOAT       |                                      |
+| a                 | FLOAT       |                                      |
+
+
+
 ## Functions
 
 ### `INT CSV_ReadFileToArray(STRING filename, INT size, INT8* arrayPointer)`
