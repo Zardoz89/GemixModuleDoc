@@ -24,12 +24,14 @@ ble ble ble ble ble ble...
 
 ### sdk_color
 
-Members:
+#### Members
 
- * `FLOAT r`
- * `FLOAT g`
- * `FLOAT b`
- * `FLOAT a`
+| Name              | Type        |                                      |
+|-------------------|-------------|--------------------------------------|
+| r                 | FLOAT       |                                      |
+| g                 | FLOAT       |                                      |
+| b                 | FLOAT       |                                      |
+| a                 | FLOAT       |                                      |
 
 
 
@@ -49,9 +51,9 @@ Pointer of the array where to write
 
 | Name              | Type        |                                      |
 |-------------------|-------------|--------------------------------------|
-| filename	| STRING	| 	|
-| size	| INT	| 	|
-| arrayPointer	| INT8*	| 	|
+| filename          | STRING      |                                      |
+| size              | INT         |                                      |
+| arrayPointer      | INT8*       |                                      |
 
 #### Return
 
@@ -97,9 +99,9 @@ INT CSV_ReadFileToArray(STRING filename, INT size, DOUBLE* arrayPointer)
 
 | Name              | Type        |                                      |
 |-------------------|-------------|--------------------------------------|
-| 	| INT	| 	|
-| 	| INT	| 	|
-| 	| INT8*	| 	|
+|                   | INT         |                                      |
+|                   | INT         |                                      |
+|                   | INT8*       |                                      |
 
 #### Return
 
@@ -144,8 +146,8 @@ INT CSV_ReadToArray(INT , INT , DOUBLE* )
 
 | Name              | Type        |                                      |
 |-------------------|-------------|--------------------------------------|
-| 	| INT	| 	|
-| 	| INT	| 	|
+|                   | INT         |                                      |
+|                   | INT         |                                      |
 
 #### Return
 
@@ -169,8 +171,8 @@ sdk_color sdk_min(sdk_color , sdk_color )
 
 | Name              | Type        |                                      |
 |-------------------|-------------|--------------------------------------|
-| 	| sdk_color*	| 	|
-| 	| sdk_color*	| 	|
+|                   | sdk_color*  |                                      |
+|                   | sdk_color*  |                                      |
 
 #### Return
 
@@ -186,8 +188,8 @@ INT
 
 | Name              | Type        |                                      |
 |-------------------|-------------|--------------------------------------|
-| 	| vec2*	| 	|
-| 	| vec2*	| 	|
+|                   | vec2*       |                                      |
+|                   | vec2*       |                                      |
 
 #### Return
 

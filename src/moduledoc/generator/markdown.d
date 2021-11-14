@@ -136,28 +136,34 @@ class MarkdownGenerator {
     sink.put("### ");
     sink.put(typedefInfo.name);
     sink.put("\n\n");
-    sink.put("Members:\n\n");
 
-    foreach(member; typedefInfo.members) {
-      sink.put(" * `");
-      sink.put(member.type.toString());
-      sink.put(" ");
-      sink.put(member.name);
-      if (member.defaultValue.length > 0) {
-        sink.put(" = ");
-        sink.put(member.defaultValue);
-      }
-      sink.put("`\n");
-      if (member.docText.length > 0) {
-        sink.put("\t\n\t");
-        sink.put(member.docText);
-        sink.put("\n\t\n");
-      }
-    }
-    sink.put("\n");
     if (typedefInfo.docText.length > 0) {
       sink.put(typedefInfo.docText);
       sink.put("\n\n");
+    }
+
+    sink.put("#### Members");
+    sink.put("\n\n");
+    this.typeTable(sink, typedefInfo.members);
+    sink.put("\n");
+  }
+
+  /// Genera la tabla de miembros de un typedef o parámetros de una función
+  private void typeTable(R)(R sink, TypeMember[] typeMembers)
+  if (isOutputRange!(R, char)) {
+    import std.string : leftJustify;
+
+    sink.put("| Name              | Type        |                                      |\n");
+    sink.put("|-------------------|-------------|--------------------------------------|\n");
+
+    foreach(member; typeMembers) {
+      sink.put("| ");
+      sink.put(member.name.leftJustify(17));
+      sink.put(" | ");
+      sink.put(member.type.toString.leftJustify(11));
+      sink.put(" | ");
+      sink.put(member.docText.leftJustify(36));
+      sink.put(" |\n");
     }
   }
 
@@ -177,7 +183,6 @@ class MarkdownGenerator {
         this.generateFunction(sink, functionInfo, false);
       }
     }
-
   }
 
   private void generateFunction(R)(R sink, FunctionInfo functionInfo, bool showDocumentation)
@@ -199,18 +204,7 @@ class MarkdownGenerator {
       if (functionInfo.params.length > 0) {
         sink.put("#### Parameters");
         sink.put("\n\n");
-        sink.put("| Name              | Type        |                                      |\n");
-        sink.put("|-------------------|-------------|--------------------------------------|\n");
-
-        foreach(paramInfo; functionInfo.params) {
-          sink.put("| ");
-          sink.put(paramInfo.name);
-          sink.put("\t| ");
-          sink.put(paramInfo.type.toString);
-          sink.put("\t| ");
-          sink.put(paramInfo.docText);
-          sink.put("\t|\n");
-        }
+        this.typeTable(sink, functionInfo.params);
         sink.put("\n");
       }
 

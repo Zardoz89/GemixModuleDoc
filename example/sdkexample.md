@@ -25,38 +25,46 @@ Gemix Studio - Copyright (c) 2005-2013 Skygem Software. All rights reserved.
 
 ### MyType
 
-Members:
+#### Members
 
- * `INT8 r`
- * `INT8 g`
- * `INT8 b`
- * `INT16 a`
+| Name              | Type        |                                      |
+|-------------------|-------------|--------------------------------------|
+| r                 | INT8        |                                      |
+| g                 | INT8        |                                      |
+| b                 | INT8        |                                      |
+| a                 | INT16       |                                      |
 
 ### OtherType
 
-Members:
+#### Members
 
- * `INT8* ptr`
- * `INT size`
+| Name              | Type        |                                      |
+|-------------------|-------------|--------------------------------------|
+| ptr               | INT8*       |                                      |
+| size              | INT         |                                      |
 
 ### sdk_color
 
-Members:
-
- * `FLOAT r`
- * `FLOAT g`
- * `FLOAT b`
- * `FLOAT a`
-
  A type... 
+
+#### Members
+
+| Name              | Type        |                                      |
+|-------------------|-------------|--------------------------------------|
+| r                 | FLOAT       |                                      |
+| g                 | FLOAT       |                                      |
+| b                 | FLOAT       |                                      |
+| a                 | FLOAT       |                                      |
 
 ### ComplexType
 
-Members:
+#### Members
 
- * `sdk_color color`
- * `INT32 vec[3]`
- * `BOOL enabled`
+| Name              | Type        |                                      |
+|-------------------|-------------|--------------------------------------|
+| color             | sdk_color   |                                      |
+| vec[3]            | INT32       |                                      |
+| enabled           | BOOL        |                                      |
 
 
 
@@ -66,6 +74,7 @@ Members:
 
 
 Returns the lower/minimal value from two values
+A value
 
 
 
@@ -73,12 +82,13 @@ Returns the lower/minimal value from two values
 
 | Name              | Type        |                                      |
 |-------------------|-------------|--------------------------------------|
-| value1	| INT	| 	|
-| value2	| INT	| 	|
+| value1            | INT         |                                      |
+| value2            | INT         |                                      |
 
 #### Return
 
 FLOAT
+the minimal/lowest value from value1 and value2
 
 #### Overloads
 
@@ -101,8 +111,8 @@ Old way
 
 | Name              | Type        |                                      |
 |-------------------|-------------|--------------------------------------|
-| 	| sdk_color	| 	|
-| 	| sdk_color	| 	|
+|                   | sdk_color   |                                      |
+|                   | sdk_color   |                                      |
 
 #### Return
 
@@ -116,8 +126,8 @@ sdk_color
 
 | Name              | Type        |                                      |
 |-------------------|-------------|--------------------------------------|
-| 	| sdk_color*	| 	|
-| 	| sdk_color*	| 	|
+|                   | sdk_color*  |                                      |
+|                   | sdk_color*  |                                      |
 
 #### Return
 
@@ -125,18 +135,20 @@ INT
 
 
 
-### `VOID sdk_swap(vec2* , vec2* )`
+### `VOID sdk_swap(vec2* vectorA, vec2* vectorB)`
 
 
 Swaps two values
+the first vector
+the second vector
    
 
 #### Parameters
 
 | Name              | Type        |                                      |
 |-------------------|-------------|--------------------------------------|
-| 	| vec2*	| 	|
-| 	| vec2*	| 	|
+| vectorA           | vec2*       |                                      |
+| vectorB           | vec2*       |                                      |
 
 #### Return
 
@@ -145,10 +157,10 @@ VOID
 #### Overloads
 
 ```gemix
-VOID sdk_swap(vec3* , vec3* )
+VOID sdk_swap(vec3* vectorA, vec3* vectorB)
 ```
 ```gemix
-VOID sdk_swap(vec4* , vec4* )
+VOID sdk_swap(vec4* vectorA, vec4* vectorB)
 ```
 
 
@@ -158,7 +170,7 @@ VOID sdk_swap(vec4* , vec4* )
 
 | Name              | Type        |                                      |
 |-------------------|-------------|--------------------------------------|
-| 	| VOID*	| 	|
+|                   | VOID*       |                                      |
 
 #### Return
 
