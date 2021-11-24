@@ -76,6 +76,7 @@ struct Type {
     return typeName ~ "*".repeat(this.indirectionLevel).joiner().to!string;
   }
 
+  /// Parsea la cadena de la definición de la signatura de la función para extraer el tipo representado
   public static Type getFromFunctionSignature(R)(R text)
   if (isInputRange!R)
   {
@@ -131,6 +132,7 @@ struct Type {
     return type;
   }
 
+  /// Parsea una cadena de texto que representa código DIV/GEMIX
   public static Type getFromString(string text)
   {
     import std.algorithm.searching : count;
@@ -220,17 +222,25 @@ struct GemixModuleInfo {
   /// Bloque de texto de documentación en bruto
   string docText;
 
+  /// Diccionario con las anotaciones de documentación en el texto de documentación
+  string[string] documentationAnnotations;
+
   /// Parsea el texto de documentación del módulo
   public void parseDocText() {
-    import std.regex : matchFirst, replaceAll, ctRegex;
+    import std.regex : matchAll, replaceAll, ctRegex;
+    import std.uni : toLower;
 
-    auto nameMatch = this.docText.matchFirst(ctRegex!(`@name\s+(.*)`, "i"));
-    if (nameMatch.length > 0) {
-      this.name = nameMatch[1].stripSpaces;
+    // Extraemos todas las anotaciones de documentación
+    auto annotationsMatches = this.docText.matchAll(ctRegex!(`@(\w+)\s+(.*)$`, "m"));
+    foreach(annotationMatch ; annotationsMatches) {
+      this.documentationAnnotations[annotationMatch[1].toLower] = annotationMatch[2];
+    }
+    if ("name" in this.documentationAnnotations) {
+      this.name = this.documentationAnnotations["name"];
     }
 
     // Una vez extraido la información util de documentaciñon, obtenemos el cuerpo del texto de documentación
-    this.docBody = this.docText.replaceAll(ctRegex!("@\\w+.*$", "m"), "");
+    this.docBody = this.docText.replaceAll(ctRegex!(`@\w+.*$`, "m"), "");
 
     foreach(overloadedFunctions; this.functions.byValue()) {
       foreach(overloadFunction; overloadedFunctions) {
