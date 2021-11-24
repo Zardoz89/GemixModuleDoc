@@ -54,6 +54,12 @@ class MarkdownGenerator {
     sink.put(moduleInfo.system.to!string);
     sink.put("\n");
 
+    if ("deprecated" in moduleInfo.documentationAnnotations) {
+      sink.put("\n**LEGACY**\n");
+      sink.put(moduleInfo.documentationAnnotations["deprecated"]);
+      sink.put("\n\n");
+    }
+
     if (moduleInfo.docBody.length > 0) {
       sink.put("\n");
       sink.put(moduleInfo.docBody);
@@ -125,7 +131,7 @@ class MarkdownGenerator {
       sink.put(varInfo.value);
     }
     sink.put("`\n");
-    if (varInfo.docText.length > 0) {
+    if (varInfo.docBody.length > 0) {
       sink.put("\t\n");
       sink.put("\t");
       sink.put(varInfo.docText);
@@ -144,14 +150,20 @@ class MarkdownGenerator {
     }
   }
 
-  private void generateType(R)(R sink, TypedefInfo typedefInfo)
+  private void generateType(R)(R sink, ref TypedefInfo typedefInfo)
   if (isOutputRange!(R, char)) {
     sink.put("### ");
     sink.put(typedefInfo.name);
     sink.put("\n\n");
 
+    if ("deprecated" in  typedefInfo.documentationAnnotations) {
+      sink.put("\n**LEGACY**\n");
+      sink.put(typedefInfo.documentationAnnotations["deprecated"]);
+      sink.put("\n\n");
+    }
+
     if (typedefInfo.docText.length > 0) {
-      sink.put(typedefInfo.docText);
+      sink.put(typedefInfo.docBody);
       sink.put("\n\n");
     }
 

@@ -43,6 +43,12 @@ Gemix Studio - Copyright (c) 2005-2013 Skygem Software. All rights reserved.
 
 ### MyType
 
+
+**LEGACY**
+Use instead [sdk_color](#sdk_color)
+
+Color using integer values
+
 #### Members
 
 | Name              | Type        |                                      |
@@ -63,7 +69,7 @@ Gemix Studio - Copyright (c) 2005-2013 Skygem Software. All rights reserved.
 
 ### sdk_color
 
- A type... 
+Color using float point values 
 
 #### Members
 

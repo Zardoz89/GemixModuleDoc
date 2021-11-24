@@ -27,6 +27,10 @@ GMXDEFINE_LIBRARY_EXPORTS(GMXEXT_mod_sdkexample,
 
 	/* TYPES */
 	GMXDEFINE_TYPES(
+	  /**
+	   * Color using integer values
+     * @deprecated Use instead [sdk_color](#sdk_color)
+	   */
 	  "type MyType "
       "int8 r;"
       "int8 g;"
@@ -37,7 +41,7 @@ GMXDEFINE_LIBRARY_EXPORTS(GMXEXT_mod_sdkexample,
       "int8* ptr;"
       "int size;"
     "end "
-    /** A type... */
+    /** Color using float point values */
 	  "type sdk_color "
       "float r;"
       "float g;"

@@ -192,9 +192,6 @@ struct GemixModuleInfo {
   /// Nombre del modulo
   string name;
 
-  /// Texto de documentación
-  string docBody;
-
   /// Categoria del módulo
   Category category = Category.Null;
 
@@ -222,6 +219,9 @@ struct GemixModuleInfo {
   /// Bloque de texto de documentación en bruto
   string docText;
 
+  /// Texto de documentación
+  string docBody;
+
   /// Diccionario con las anotaciones de documentación en el texto de documentación
   string[string] documentationAnnotations;
 
@@ -235,12 +235,36 @@ struct GemixModuleInfo {
     this.documentationAnnotations = extractedAnnotations[0];
     this.docBody = extractedAnnotations[1];
 
+    // Borramos los " * " que pueda haber al principio de cada linea
+    this.docBody = this.docBody.replaceAll(ctRegex!(`^\s*\*\s*`, "m"), "");
+
     if ("name" in this.documentationAnnotations) {
       this.name = this.documentationAnnotations["name"];
     }
 
+    // Parseo de typedefs
+    foreach(ref typedefInfo; this.typedefInfos) {
+      typedefInfo.parseDocText();
+    }
+
+    // Parseo de constantes
+    foreach(ref varInfo; this.constInfos) {
+      varInfo.parseDocText();
+    }
+
+    // Parseo de globales
+    foreach(ref varInfo; this.globalsInfos) {
+      varInfo.parseDocText();
+    }
+
+    // Parseo de locales
+    foreach(ref varInfo; this.localInfos) {
+      varInfo.parseDocText();
+    }
+
+    // Parseo de funciones
     foreach(overloadedFunctions; this.functions.byValue()) {
-      foreach(overloadFunction; overloadedFunctions) {
+      foreach(ref overloadFunction; overloadedFunctions) {
         overloadFunction.parseDocText;
       }
     }
@@ -266,7 +290,7 @@ struct GemixModuleInfo {
 import std.typecons : Tuple, tuple;
 
 /// Extrae de un texto, todas las anotaciones de documenntación
-Tuple!(string[string], string) getAnnotationsFromText(string text)
+package Tuple!(string[string], string) getAnnotationsFromText(string text)
 {
     import std.regex : matchAll, replaceAll, ctRegex;
     import std.uni : toLower;
@@ -281,10 +305,35 @@ Tuple!(string[string], string) getAnnotationsFromText(string text)
     }
 
     // Una vez extraido la información util de documentaciñon, obtenemos el cuerpo del texto de documentación
-    docBody = text.replaceAll(ctRegex!(`@\w+.*$`, "m"), "");
+    docBody = text.replaceAll(ctRegex!(`@\w+.*$`, "m"), "").stripLeftSpaces;
     return tuple(documentationAnnotations, docBody);
 }
 
+package mixin template SimpleDocumentationMixin()
+{
+  /// Documentación en bruto
+  string docText;
+
+  /// Diccionario con las anotaciones de documentación en el texto de documentación
+  string[string] documentationAnnotations;
+
+  /// Texto de documentación
+  string docBody;
+
+  /// Parsea el texto de documentación del módulo
+  public void parseDocText() {
+    import std.regex : matchAll, replaceAll, ctRegex;
+    import std.uni : toLower;
+
+    // Extraemos todas las anotaciones de documentación
+    auto extractedAnnotations = getAnnotationsFromText(this.docText);
+    this.documentationAnnotations = extractedAnnotations[0];
+    this.docBody = extractedAnnotations[1];
+
+    // Borramos los " * " que pueda haber al principio de cada linea
+    this.docBody = this.docBody.replaceAll(ctRegex!(`^\s*\*\s*`, "m"), "");
+  }
+}
 
 /// Representa una constante, variable global o local
 struct VarInfo {
@@ -297,14 +346,7 @@ struct VarInfo {
   /// Valor
   string value;
 
-  /// Documentación en bruto
-  string docText;
-
-  /// Diccionario con las anotaciones de documentación en el texto de documentación
-  string[string] documentationAnnotations;
-
-  /// Texto de documentación
-  string docBody;
+  mixin SimpleDocumentationMixin;
 }
 
 /// Representa una definición de un tipo
@@ -315,8 +357,7 @@ struct TypedefInfo {
   /// Miembros del tipo
   TypeMember[] members;
 
-  /// Documentación de la definición del tipo
-  string docText;
+  mixin SimpleDocumentationMixin;
 }
 
 /// Informacion de una función del módulo
