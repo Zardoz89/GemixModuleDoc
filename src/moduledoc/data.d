@@ -231,16 +231,13 @@ struct GemixModuleInfo {
     import std.uni : toLower;
 
     // Extraemos todas las anotaciones de documentación
-    auto annotationsMatches = this.docText.matchAll(ctRegex!(`@(\w+)\s+(.*)$`, "m"));
-    foreach(annotationMatch ; annotationsMatches) {
-      this.documentationAnnotations[annotationMatch[1].toLower] = annotationMatch[2];
-    }
+    auto extractedAnnotations = getAnnotationsFromText(this.docText);
+    this.documentationAnnotations = extractedAnnotations[0];
+    this.docBody = extractedAnnotations[1];
+
     if ("name" in this.documentationAnnotations) {
       this.name = this.documentationAnnotations["name"];
     }
-
-    // Una vez extraido la información util de documentaciñon, obtenemos el cuerpo del texto de documentación
-    this.docBody = this.docText.replaceAll(ctRegex!(`@\w+.*$`, "m"), "");
 
     foreach(overloadedFunctions; this.functions.byValue()) {
       foreach(overloadFunction; overloadedFunctions) {
@@ -266,6 +263,29 @@ struct GemixModuleInfo {
   }
 }
 
+import std.typecons : Tuple, tuple;
+
+/// Extrae de un texto, todas las anotaciones de documenntación
+Tuple!(string[string], string) getAnnotationsFromText(string text)
+{
+    import std.regex : matchAll, replaceAll, ctRegex;
+    import std.uni : toLower;
+
+    string[string] documentationAnnotations;
+    string docBody;
+
+    // Extraemos todas las anotaciones de documentación
+    auto annotationsMatches = text.matchAll(ctRegex!(`@(\w+)\s+(.*)$`, "m"));
+    foreach(annotationMatch ; annotationsMatches) {
+      documentationAnnotations[annotationMatch[1].toLower] = annotationMatch[2];
+    }
+
+    // Una vez extraido la información util de documentaciñon, obtenemos el cuerpo del texto de documentación
+    docBody = text.replaceAll(ctRegex!(`@\w+.*$`, "m"), "");
+    return tuple(documentationAnnotations, docBody);
+}
+
+
 /// Representa una constante, variable global o local
 struct VarInfo {
   /// Nombre
@@ -277,8 +297,14 @@ struct VarInfo {
   /// Valor
   string value;
 
-  /// Documentación
+  /// Documentación en bruto
   string docText;
+
+  /// Diccionario con las anotaciones de documentación en el texto de documentación
+  string[string] documentationAnnotations;
+
+  /// Texto de documentación
+  string docBody;
 }
 
 /// Representa una definición de un tipo
