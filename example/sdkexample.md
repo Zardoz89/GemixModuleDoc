@@ -101,6 +101,7 @@ Returns the lower/minimal value from two values
 
 
 
+	 
 #### Parameters
 
 | Name              | Type        |                                      |
@@ -128,6 +129,7 @@ sdk_color sdk_min(sdk_color value1, sdk_color value2)
 
 Old way
 
+   
 #### Parameters
 
 | Name              | Type        |                                      |
@@ -162,11 +164,12 @@ Old way
 Swaps two values
 
 
+   
 #### Parameters
 
 | Name              | Type        |                                      |
 |-------------------|-------------|--------------------------------------|
-| vectorA           | vec2*       | the first vector                     |
+| vectorA           | vec2*       | the first vector. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam pretium viverra |
 | vectorB           | vec2*       | the second vector                    |
 
 #### Return
@@ -183,13 +186,16 @@ VOID sdk_swap(vec4* vectorA, vec4* vectorB)
 ```
 
 
-### `VOID sdk_misc_fun(VOID* )`
+### `VOID sdk_misc_fun(VOID* pointer)`
 
+
+
+   
 #### Parameters
 
 | Name              | Type        |                                      |
 |-------------------|-------------|--------------------------------------|
-|                   | VOID*       |                                      |
+| pointer           | VOID*       | A very long desciption... Lorem ipsum dolor sit amet, consectetur |
 
 #### Return
 
@@ -198,7 +204,7 @@ VOID sdk_swap(vec4* vectorA, vec4* vectorB)
 #### Overloads
 
 ```gemix
-VOID sdk_misc_fun(Struct* )
+VOID sdk_misc_fun(Struct* pointer)
 ```
 
 

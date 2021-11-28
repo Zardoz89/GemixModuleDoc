@@ -3,7 +3,10 @@
  */
 module moduledoc.strutil;
 
+import std.algorithm.mutation : remove, strip, stripLeft, stripRight;
 import std.range.primitives;
+import std.regex : replaceAll, ctRegex;
+import std.string : strip;
 import std.traits : isSomeString;
 
 /**
@@ -12,7 +15,6 @@ import std.traits : isSomeString;
 R stripSpaces(R)(R text)
 if (isSomeString!R)
 {
-  import std.string : strip;
   return text.strip("\t").strip(" ").strip("\t").strip(" ");
 }
 
@@ -22,7 +24,6 @@ if (isSomeString!R)
 R stripSpaces(R)(R text)
 if (!isSomeString!R && isInputRange!R)
 {
-  import std.algorithm.mutation : strip;
   return text.strip('\t').strip(' ').strip('\t').strip(' ');
 }
 
@@ -42,7 +43,6 @@ if (isSomeString!R)
 R stripLeftSpaces(R)(R text)
 if (!isSomeString!R && isInputRange!R)
 {
-  import std.algorithm.mutation : stripLeft;
   return text.stripLeft('\t').stripLeft(' ').stripLeft('\t').stripLeft(' ');
 }
 
@@ -62,7 +62,6 @@ if (isSomeString!R)
 R stripLeftEOL(R)(R text)
 if (!isSomeString!R && isInputRange!R)
 {
-  import std.algorithm.mutation : stripLeft;
   return text.stripLeft('\r').stripLeft('\n');
 }
 
@@ -82,7 +81,6 @@ if (isSomeString!R)
 R stripAllParens(R)(R text)
 if (isSomeString!R)
 {
-  import std.string : strip;
   return text.stripLeft("(", ")");
 }
 
@@ -107,4 +105,16 @@ if (isSomeString!R)
   return text;
 }
 
+/// Removes carraige return (\r) from a string
+R removeCarriageReturn(R)(R text)
+if (isSomeString!R)
+{
+  return text.replaceAll(ctRegex!"\r", "");
+}
 
+/// Removes carraige return (\r) from a string
+R removeCarriageReturn(R)(R text)
+if (!isSomeString!R && isInputRange!R)
+{
+  return text.remove!("c == \r")(text);
+}

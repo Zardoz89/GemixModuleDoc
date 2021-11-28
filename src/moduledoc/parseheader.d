@@ -3,7 +3,6 @@
  */
 module moduledoc.parseheader;
 
-import std.stdio;
 import std.regex : split;
 import std.algorithm.searching : findSkip, findSplit, findSplitBefore;
 import std.conv : to;
@@ -132,7 +131,7 @@ if (isInputRange!R)
     string constBlock = text.findSplitBefore(");")[0].to!string;
     auto constBlockLength = constBlock.length;
 
-    constBlock.processConstBlock(moduleInfo);
+    constBlock.removeCarriageReturn.processConstBlock(moduleInfo);
 
     text = text.drop(constBlockLength);
   }
@@ -190,7 +189,7 @@ if (isInputRange!R)
     text = text.stripLeftEOL.stripLeftSpaces;
     // Obtenemos todo el bloque dentro de GMXDEFINE_GLOBALS
     string globalsBlock = text.findSplitBefore(");")[0].to!string;
-    processVarsBlock!(VarType.GLOBAL)(globalsBlock, moduleInfo);
+    processVarsBlock!(VarType.GLOBAL)(globalsBlock.removeCarriageReturn, moduleInfo);
     text = text.drop(globalsBlock.length);
   }
   return text;
@@ -204,7 +203,7 @@ if (isInputRange!R)
     text = text.stripLeftEOL.stripLeftSpaces;
     // Obtenemos todo el bloque dentro de GMXDEFINE_LOCALS
     string localsBlock = text.findSplitBefore(");")[0].to!string;
-    processVarsBlock!(VarType.LOCAL)(localsBlock, moduleInfo);
+    processVarsBlock!(VarType.LOCAL)(localsBlock.removeCarriageReturn, moduleInfo);
     text = text.drop(localsBlock.length);
   }
   return text;
@@ -222,7 +221,8 @@ private void processVarsBlock(VarType varType)(string block, ref GemixModuleInfo
   import std.typecons : Yes;
 
   // Dividimos el bloque en otros que contengan bloques de comentarios y declaraciones de variables
-  auto varDecAndCommentBlocks = block.splitter!(Yes.keepSeparators)(COMMENT_BLOCK_REGEX);
+  auto varDecAndCommentBlocks = block.removeCarriageReturn.splitter!(Yes.keepSeparators)(COMMENT_BLOCK_REGEX);
+  .
   string blockDocText = "";
   foreach (varDecAndCommentBlock; varDecAndCommentBlocks) {
     varDecAndCommentBlock = varDecAndCommentBlock.stripLeftEOL.stripLeftSpaces;
@@ -276,7 +276,7 @@ if (isInputRange!R)
     string typesBlock = text.findSplitBefore(");")[0].to!string;
 
     // Dividimos el bloque en otros que contengan bloques de comentarios y declaraciones de tipos
-    auto typeDecAndCommentBlocks = typesBlock.splitter!(Yes.keepSeparators)(COMMENT_BLOCK_REGEX);
+    auto typeDecAndCommentBlocks = typesBlock.removeCarriageReturn.splitter!(Yes.keepSeparators)(COMMENT_BLOCK_REGEX);
     string typeDocText = "";
     foreach (typeDecAndCommentBlock; typeDecAndCommentBlocks) {
       typeDecAndCommentBlock = typeDecAndCommentBlock.stripLeftEOL.stripLeftSpaces;
@@ -352,7 +352,7 @@ if (isInputRange!R)
     string functionsBlock = text.findSplitBefore(");")[0].to!string;
 
     // Dividimos el bloque en otros que contengan bloques de comentarios y declaraciones de funciones
-    auto fDecAndCommentBlocks = functionsBlock.splitter!(Yes.keepSeparators)(COMMENT_BLOCK_REGEX);
+    auto fDecAndCommentBlocks = functionsBlock.removeCarriageReturn.splitter!(Yes.keepSeparators)(COMMENT_BLOCK_REGEX);
     string functionDocText = "";
     foreach (fDecAndCommentBlock; fDecAndCommentBlocks) {
       string lastFunctionName;
@@ -405,7 +405,7 @@ if (isInputRange!R)
 
   string ret = "";
   if(text.findSkip("/**")) {
-    ret = text.matchFirst(EXTRACT_COMMENT_BLOCK_REGEX).hit.dropBack(2);
+    ret = text.matchFirst(EXTRACT_COMMENT_BLOCK_REGEX).hit.dropBack(2).removeCarriageReturn;
   }
   text.findSkip("*/");
   return ret;

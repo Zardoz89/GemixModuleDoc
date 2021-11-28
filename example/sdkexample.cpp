@@ -88,12 +88,15 @@ GMXDEFINE_LIBRARY_EXPORTS(GMXEXT_mod_sdkexample,
       "sdk_copy(TP(sdk_color),TP(sdk_color))", "I"           , 0, GMXEXT_sdkexample_sdk_copy,
   /**
    * Swaps two values
-   * @param vectorA the first vector
+   * @param vectorA the first vector. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam pretium viverra
    * @param vectorB the second vector
    */
       "sdk_swap(TP(vec2),TP(vec2))"          , "V"           , 0, GMXEXT_sdkexample_sdk_swap_vec2,
       "sdk_swap(TP(vec3),TP(vec3))"          , "V"           , 0, GMXEXT_sdkexample_sdk_swap_vec3,
       "sdk_swap(TP(vec4),TP(vec4))"          , "V"           , 0, GMXEXT_sdkexample_sdk_swap_vec4,
+  /**
+   * @param pointer A very long desciption... Lorem ipsum dolor sit amet, consectetur
+   */
       "sdk_misc_fun(VP)"                     , "V"           , 1, GMXEXT_sdkexample_sdk_misc_fun,
       "sdk_misc_fun(STP(an_struct))"         , "V"           , 1, GMXEXT_sdkexample_sdk_misc_fun_st,
 	);

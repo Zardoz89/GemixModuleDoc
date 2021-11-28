@@ -299,13 +299,13 @@ package Tuple!(string[string], string) getAnnotationsFromText(string text)
     string docBody;
 
     // Extraemos todas las anotaciones de documentación
-    auto annotationsMatches = text.matchAll(ctRegex!(`@(\w+)\s+(.*)$`, "m"));
+    auto annotationsMatches = text.matchAll(SIMPLE_DOC_ATTRIBUTE_REGEX);
     foreach(annotationMatch ; annotationsMatches) {
       documentationAnnotations[annotationMatch[1].toLower] = annotationMatch[2];
     }
 
     // Una vez extraido la información util de documentaciñon, obtenemos el cuerpo del texto de documentación
-    docBody = text.replaceAll(ctRegex!(`@\w+.*$`, "m"), "").stripLeftSpaces;
+    docBody = text.replaceAll(SIMPLE_DOC_ATTRIBUTE_REGEX, "").stripLeftSpaces;
     return tuple(documentationAnnotations, docBody);
 }
 
@@ -390,6 +390,9 @@ class FunctionInfo {
   /// Parsea el texto de documentación de la función
   public void parseDocText() {
     import std.regex : matchAll, matchFirst, replaceAll, ctRegex;
+
+    // Borramos los " * " al principio de cada linea
+    this.docText = this.docText.replaceAll(ctRegex!(`^\s+\*\s+`, "m"), "\n");
 
     auto paramMatches = this.docText.matchAll(PARAM_REGEX);
 
