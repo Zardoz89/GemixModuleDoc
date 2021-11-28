@@ -402,7 +402,7 @@ class FunctionInfo {
         break;
       }
       this.params[index].name = paramMatch[1];
-      this.params[index].docText = paramMatch[2].stripSpaces;
+      this.params[index].docText = paramMatch[2].replaceAll(ctRegex!`\n+`, " ").stripSpaces;
       index++;
     }
     this.docText = this.docText.replaceAll(PARAM_REGEX, "");

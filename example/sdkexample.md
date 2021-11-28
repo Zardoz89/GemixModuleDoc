@@ -99,8 +99,6 @@ Color using float point values
 
 Returns the lower/minimal value from two values
 
-
-
 	 
 #### Parameters
 
@@ -163,13 +161,11 @@ Old way
 
 Swaps two values
 
-
-   
 #### Parameters
 
 | Name              | Type        |                                      |
 |-------------------|-------------|--------------------------------------|
-| vectorA           | vec2*       | the first vector. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam pretium viverra |
+| vectorA           | vec2*       | the first vector. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer sapien augue,  pulvinar quis velit id, dignissim ornare nulla. In urna mauris, aliquam ac nunc sit amet, porttitor lobortis nisl. |
 | vectorB           | vec2*       | the second vector                    |
 
 #### Return
@@ -190,12 +186,11 @@ VOID sdk_swap(vec4* vectorA, vec4* vectorB)
 
 
 
-   
 #### Parameters
 
 | Name              | Type        |                                      |
 |-------------------|-------------|--------------------------------------|
-| pointer           | VOID*       | A very long desciption... Lorem ipsum dolor sit amet, consectetur |
+| pointer           | VOID*       | A very long desciption... Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer sapien augue, pulvinar quis velit id, dignissim ornare nulla. In urna mauris, aliquam ac nunc sit amet, porttitor lobortis nisl. |
 
 #### Return
 

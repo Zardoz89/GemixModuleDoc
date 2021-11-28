@@ -74,7 +74,7 @@ GMXDEFINE_LIBRARY_EXPORTS(GMXEXT_mod_sdkexample,
 	/**
 	 * Returns the lower/minimal value from two values
 	 * @param value1 A value
-	 * @param value2
+	 * @param value2 
 	 * @return the minimal/lowest value from value1 and value2
 	 */
 	    "sdk_min(I,I)"                         , "F"           , 0, GMXEXT_sdkexample_sdk_min ,
@@ -88,14 +88,18 @@ GMXDEFINE_LIBRARY_EXPORTS(GMXEXT_mod_sdkexample,
       "sdk_copy(TP(sdk_color),TP(sdk_color))", "I"           , 0, GMXEXT_sdkexample_sdk_copy,
   /**
    * Swaps two values
-   * @param vectorA the first vector. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam pretium viverra
+   * @param vectorA the first vector. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer sapien augue, 
+   *    pulvinar quis velit id, dignissim ornare nulla. In urna mauris, aliquam ac nunc sit amet, porttitor lobortis
+   *    nisl.
    * @param vectorB the second vector
    */
       "sdk_swap(TP(vec2),TP(vec2))"          , "V"           , 0, GMXEXT_sdkexample_sdk_swap_vec2,
       "sdk_swap(TP(vec3),TP(vec3))"          , "V"           , 0, GMXEXT_sdkexample_sdk_swap_vec3,
       "sdk_swap(TP(vec4),TP(vec4))"          , "V"           , 0, GMXEXT_sdkexample_sdk_swap_vec4,
   /**
-   * @param pointer A very long desciption... Lorem ipsum dolor sit amet, consectetur
+   * @param pointer A very long desciption... Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer sapien
+   *    augue, pulvinar quis velit id, dignissim ornare nulla. In urna mauris, aliquam ac nunc sit amet, porttitor
+   *    lobortis nisl.
    */
       "sdk_misc_fun(VP)"                     , "V"           , 1, GMXEXT_sdkexample_sdk_misc_fun,
       "sdk_misc_fun(STP(an_struct))"         , "V"           , 1, GMXEXT_sdkexample_sdk_misc_fun_st,

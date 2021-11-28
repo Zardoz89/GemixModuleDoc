@@ -47,10 +47,6 @@ ble ble ble ble ble ble...
 
 Blabla bla
 
-
-
-
-
 #### Parameters
 
 | Name              | Type        |                                      |
